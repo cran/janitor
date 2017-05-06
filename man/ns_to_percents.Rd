@@ -22,7 +22,6 @@ Returns a data.frame of percentages, expressed as numeric values between 0 and 1
 This function excludes the first column of the input data.frame, assuming that it contains a descriptive variable.
 }
 \examples{
-library(dplyr) # for the \%>\% pipe
 mtcars \%>\%
   crosstab(am, cyl) \%>\%
   ns_to_percents(denom = "all")
@@ -30,7 +29,6 @@ mtcars \%>\%
   # when total_n is needed
   mtcars \%>\%
   crosstab(am, cyl) \%>\%
-  add_totals_row() \%>\% # add a totals row that should not be included in the denominator
+  adorn_totals("row") \%>\% # add a totals row that should not be included in the denominator
   ns_to_percents(denom = "all", total_n = nrow(mtcars)) # specify correct denominator
 }
-

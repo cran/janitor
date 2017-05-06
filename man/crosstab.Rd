@@ -2,8 +2,8 @@
 % Please edit documentation in R/crosstab.R
 \name{crosstab}
 \alias{crosstab}
-\alias{crosstab.data.frame}
 \alias{crosstab.default}
+\alias{crosstab.data.frame}
 \title{Generate a crosstabulation of two vectors.}
 \usage{
 crosstab(...)
@@ -50,14 +50,13 @@ crosstab(mtcars$cyl, mtcars$gear)
 crosstab(mtcars$cyl, mtcars$gear, "row")
 
 # Passing in a data.frame using a pipeline:
-library(dplyr) # to access the pipe operator
 mtcars \%>\% crosstab(cyl, gear)
 mtcars \%>\% crosstab(cyl, gear, "row")
 
 # This allows for upstream operations
 # prior to the crosstab() call:
+library(dplyr)
 mtcars \%>\%
   filter(am == 0) \%>\%
   crosstab(cyl, gear)
 }
-

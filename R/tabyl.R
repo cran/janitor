@@ -23,7 +23,6 @@
 #' tabyl(mtcars$cyl, sort = TRUE)
 #' 
 #' # Passing in a data.frame using a pipeline:
-#' library(dplyr) # to access the pipe operator
 #' mtcars %>% tabyl(cyl, sort = TRUE)
 #' 
 #' # illustrating show_na functionality:
@@ -45,6 +44,11 @@ tabyl.default <- function(vec, sort = FALSE, show_na = TRUE, ...) {
   } else {
     var_name <- names(vec)
   }
+
+  # useful error message if input vector doesn't exist
+  if(is.null(vec)){stop(paste0("object ", var_name, " not found"))}
+  # an odd variable name can be deparsed into a vector of length >1, rare but throws warning, see issue #87
+  if(length(var_name) > 1){ var_name <- paste(var_name, collapse = "") }
   
   # calculate initial counts table
   # convert vector to a 1 col data.frame
@@ -57,7 +61,12 @@ tabyl.default <- function(vec, sort = FALSE, show_na = TRUE, ...) {
     result <- dat %>% dplyr::count(vec, sort = sort)
     
     if(is.factor(vec)){
-      result <- tidyr::complete(result, vec)
+      expanded <- tidyr::expand(result, vec)
+      result <- merge(x = expanded, # can't use dplyr::left_join because as of 0.6.0, NAs don't match, and na_matches argument not present < 0.6.0
+                      y = result,
+                      by = "vec",
+                      all.x = TRUE)
+      result <- dplyr::arrange(result, vec) # restore sorting by factor level
       if(sort){result <- dplyr::arrange(result, dplyr::desc(n))} # undo reorder caused by complete()
     }
     

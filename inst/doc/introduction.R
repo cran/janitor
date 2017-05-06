@@ -59,20 +59,9 @@ mtcars %>%
 ## ------------------------------------------------------------------------
 get_dupes(mtcars, wt, cyl) # or mtcars %>% get_dupes(wt, cyl) if you prefer to pipe
 
-## ---- eval = FALSE-------------------------------------------------------
-#  ifelse(!is.na(sensorA), sensorA,
-#         ifelse(!is.na(sensorB), sensorB,
-#                sensorC))
-
-## ---- eval = FALSE-------------------------------------------------------
-#  use_first_valid_of(sensorA, sensorB, sensorC)
-
 ## ------------------------------------------------------------------------
 excel_numeric_to_date(41103)
 excel_numeric_to_date(41103, date_system = "mac pre-2011")
-
-## ------------------------------------------------------------------------
-convert_to_NA(letters[1:5], c("b", "d"))
 
 ## ------------------------------------------------------------------------
 q <- data.frame(v1 = c(1, NA, 3),
@@ -85,8 +74,7 @@ q %>%
 ## ------------------------------------------------------------------------
 mtcars %>%
   crosstab(am, cyl) %>%
-  add_totals_row %>%
-  add_totals_col
+  adorn_totals("row")
 
 ## ------------------------------------------------------------------------
 mtcars %>%

@@ -1,12 +1,10 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<hr/>
 > Data scientists, according to interviews and expert estimates, spend from 50 percent to 80 percent of their time mired in this more mundane labor of collecting and preparing unruly digital data, before it can be explored for useful nuggets.
 >
 > -- *"[For Big-Data Scientists, 'Janitor Work' Is Key Hurdle to Insight](http://www.nytimes.com/2014/08/18/technology/for-big-data-scientists-hurdle-to-insights-is-janitor-work.html)" - The New York Times, 2014*
 
-<hr/>
-janitor <img src="logo_small.png" align="right" />
-==================================================
+janitor <img src="tools/readme/logo_small.png" align="right" />
+===============================================================
 
 ------------------------------------------------------------------------
 
@@ -17,8 +15,8 @@ janitor <img src="logo_small.png" align="right" />
 The main janitor functions:
 
 -   perfectly format data.frame column names;
--   isolate partially-duplicate records; and
--   provide quick one- and two-variable tabulations (i.e., frequency tables and crosstabs).
+-   provide quick one- and two-variable tabulations (i.e., frequency tables and crosstabs); and
+-   isolate partially-duplicate records.
 
 Other janitor functions nicely format the results of these tabulations. Together, these tabulate-and-report functions approximate popular features of SPSS and Microsoft Excel.
 
@@ -50,7 +48,7 @@ Below are quick examples of how janitor tools are commonly used. A full descript
 
 ### Cleaning dirty data
 
-Take this roster of teachers at a fictional American high school, stored in the Microsoft Excel file [dirty\_data.xlsx](https://github.com/sfirke/janitor/blob/master/dirty_data.xlsx): ![All kinds of dirty.](dirty_data.PNG)
+Take this roster of teachers at a fictional American high school, stored in the Microsoft Excel file [dirty\_data.xlsx](https://github.com/sfirke/janitor/blob/master/dirty_data.xlsx): ![All kinds of dirty.](tools/readme/dirty_data.PNG)
 
 Dirtiness includes:
 
@@ -92,27 +90,25 @@ roster <- roster_raw %>%
   clean_names() %>%
   remove_empty_rows() %>%
   remove_empty_cols() %>%
-  convert_to_NA(c("TBD", "PENDING")) %>%
-  mutate(hire_date = excel_numeric_to_date(hire_date),
-         main_cert = use_first_valid_of(certification, certification_2)) %>%
+  mutate(hire_date = excel_numeric_to_date(hire_date)) %>%
   select(-certification, -certification_2) # drop unwanted columns
 
 roster
-#> # A tibble: 12 × 8
-#>      first_name last_name employee_status    subject  hire_date percent_allocated full_time      main_cert
-#>           <chr>     <chr>           <chr>      <chr>     <date>             <dbl>     <chr>          <chr>
-#> 1         Jason    Bourne         Teacher         PE 2008-08-30              0.75       Yes    Physical ed
-#> 2         Jason    Bourne         Teacher   Drafting 2008-08-30              0.25       Yes    Physical ed
-#> 3        Alicia      Keys         Teacher      Music 2001-08-15              1.00       Yes   Instr. music
-#> 4           Ada  Lovelace         Teacher       <NA> 1975-05-01              1.00       Yes      Computers
-#> 5         Desus      Nice  Administration       Dean 2013-06-06              1.00       Yes           <NA>
-#> 6  Chien-Shiung        Wu         Teacher    Physics 1930-03-20              0.50       Yes   Science 6-12
-#> 7  Chien-Shiung        Wu         Teacher  Chemistry 1930-03-20              0.50       Yes   Science 6-12
-#> 8         James     Joyce         Teacher    English 1990-05-01              0.50        No   English 6-12
-#> 9          Hedy    Lamarr         Teacher    Science 1976-06-08              0.50        No           <NA>
-#> 10       Carlos    Boozer           Coach Basketball 2015-08-05                NA        No    Physical ed
-#> 11        Young    Boozer           Coach       <NA> 1995-01-01                NA        No Political sci.
-#> 12      Micheal    Larsen         Teacher    English 2009-09-15              0.80        No    Vocal music
+#> # A tibble: 12 × 7
+#>      first_name last_name employee_status    subject  hire_date percent_allocated full_time
+#>           <chr>     <chr>           <chr>      <chr>     <date>             <dbl>     <chr>
+#>  1        Jason    Bourne         Teacher         PE 2008-08-30              0.75       Yes
+#>  2        Jason    Bourne         Teacher   Drafting 2008-08-30              0.25       Yes
+#>  3       Alicia      Keys         Teacher      Music 2001-08-15              1.00       Yes
+#>  4          Ada  Lovelace         Teacher       <NA> 1975-05-01              1.00       Yes
+#>  5        Desus      Nice  Administration       Dean 2013-06-06              1.00       Yes
+#>  6 Chien-Shiung        Wu         Teacher    Physics 1930-03-20              0.50       Yes
+#>  7 Chien-Shiung        Wu         Teacher  Chemistry 1930-03-20              0.50       Yes
+#>  8        James     Joyce         Teacher    English 1990-05-01              0.50        No
+#>  9         Hedy    Lamarr         Teacher    Science 1976-06-08              0.50        No
+#> 10       Carlos    Boozer           Coach Basketball 2015-08-05                NA        No
+#> 11        Young    Boozer           Coach       <NA> 1995-01-01                NA        No
+#> 12      Micheal    Larsen         Teacher    English 2009-09-15              0.80        No
 ```
 
 The core janitor cleaning function is `clean_names()` - call it whenever you load data into R.
@@ -125,14 +121,13 @@ Use `get_dupes()` to identify and examine duplicate records during data cleaning
 
 ``` r
 roster %>% get_dupes(first_name, last_name)
-#> # A tibble: 4 × 9
+#> # A tibble: 4 × 8
 #>     first_name last_name dupe_count employee_status   subject  hire_date percent_allocated full_time
 #>          <chr>     <chr>      <int>           <chr>     <chr>     <date>             <dbl>     <chr>
 #> 1 Chien-Shiung        Wu          2         Teacher   Physics 1930-03-20              0.50       Yes
 #> 2 Chien-Shiung        Wu          2         Teacher Chemistry 1930-03-20              0.50       Yes
 #> 3        Jason    Bourne          2         Teacher        PE 2008-08-30              0.75       Yes
 #> 4        Jason    Bourne          2         Teacher  Drafting 2008-08-30              0.25       Yes
-#> # ... with 1 more variables: main_cert <chr>
 ```
 
 Yes, some teachers appear twice. We ought to address this before counting employees.
@@ -186,7 +181,7 @@ Other janitor functions dress up the results of these tabulation calls for fast,
 ``` r
 roster %>%
   tabyl(employee_status, sort = TRUE) %>%
-  add_totals_row()
+  adorn_totals("row")
 #>   employee_status  n    percent
 #> 1         Teacher  9 0.75000000
 #> 2           Coach  2 0.16666667

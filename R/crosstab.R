@@ -27,12 +27,12 @@
 #' crosstab(mtcars$cyl, mtcars$gear, "row")
 #'
 #' # Passing in a data.frame using a pipeline:
-#' library(dplyr) # to access the pipe operator
 #' mtcars %>% crosstab(cyl, gear)
 #' mtcars %>% crosstab(cyl, gear, "row")
 #' 
 #' # This allows for upstream operations
 #' # prior to the crosstab() call:
+#' library(dplyr)
 #' mtcars %>%
 #'   filter(am == 0) %>%
 #'   crosstab(cyl, gear)
@@ -66,6 +66,8 @@ crosstab.default <- function(vec1, vec2, percent = "none", show_na = TRUE, ...){
     var_name <- names(vec1)
   }
   
+  # an odd variable name can be deparsed into a vector of length >1, rare but breaks function, see issue #87
+  if(length(var_name) > 1){ var_name <- paste(var_name, collapse = "") }
   
   if(!show_na){
     dat <- dat[!is.na(dat[[1]]) & !is.na(dat[[2]]), ]
@@ -89,9 +91,10 @@ crosstab.default <- function(vec1, vec2, percent = "none", show_na = TRUE, ...){
     tidyr::spread_(dat_col_names[[2]], "n", fill = 0) %>%
     dplyr::ungroup()
   
+  if("NA_" %in% names(result)){ result <- result[c(setdiff(names(result), "NA_"), "NA_")] } # move NA_ column to end, from http://stackoverflow.com/a/18339562
   # calculate percentages, if specified
   if(percent != "none"){result <- ns_to_percents(result, denom = percent)}
-  
+
   result %>%
     stats::setNames(., c(var_name, names(.)[-1])) %>%
     data.frame(., check.names = FALSE)

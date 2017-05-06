@@ -37,7 +37,7 @@ test_that("show_NA = FALSE parameter works", {
                tabyl(test_df_na$grp, show_na = FALSE))
 })
 
-test_that("sorting is preserved for factors", {
+test_that("ordering of result by factor levels is preserved for factors", {
   expect_equal(tabyl(factor(c("x", "y", "z"), levels = c("y", "z", "x")))[[1]], factor(c("y", "z", "x"), levels = c("y", "z", "x")))
 })
 
@@ -117,4 +117,23 @@ test_that("input variable names 'percent' and 'n' are handled", {
                           n_n = c(18, 7),
                           percent = c(18/25, 7/25))
   )
+})
+
+test_that("bizarre combination of %>%, quotes, and spaces in names is handled", {
+  dat <- data.frame(
+    `The candidate(s) applied directly to my school` = c("a", "b", "a", "b"),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+  )
+  
+  expect_equal(
+    tabyl(dat$`The candidate(s) applied directly to my school` %>% gsub("hi", "there", .)) %>%
+      names() %>% .[1],
+    "dat$`The candidate(s) applied directly to my school` %>% gsub(\"hi\",     \"there\", .)"
+  )
+})
+
+test_that("if called on non-existent vector, returns useful error message", {
+  expect_error(tabyl(mtcars$moose), "object mtcars\\$moose not found")
+  expect_error(tabyl(moose), "object 'moose' not found")
 })

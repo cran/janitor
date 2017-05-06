@@ -1,13 +1,14 @@
 Package: janitor
 Title: Simple Tools for Examining and Cleaning Dirty Data
-Version: 0.2.1
+Version: 0.3.0
 Authors@R: c(person("Sam", "Firke", email = "samuel.firke@gmail.com", role = c("aut", "cre")),
-    person("Chris", "Haid", email = "chrishaid@gmail.com", role = "ctb"))
+    person("Chris", "Haid", email = "chrishaid@gmail.com", role = "ctb"),
+    person("Ryan", "Knight", email = "ryangknight@gmail.com", role = "ctb"))
 Description: The main janitor functions can: perfectly format data.frame column
-    names; isolate duplicate records; and provide quick one- and two-variable
-    tabulations (i.e., frequency tables and crosstabs). Other janitor functions
-    nicely format the results of these tabulations. These tabulate-and-report
-    functions approximate popular features of SPSS and Microsoft Excel. This package
+    names; provide quick one- and two-variable tabulations (i.e., frequency
+    tables and crosstabs); and isolate duplicate records. Other janitor functions
+    nicely format the tabulation results. These tabulate-and-report functions
+    approximate popular features of SPSS and Microsoft Excel. This package
     follows the principles of the "tidyverse" and works well with the pipe function
     %>%. janitor was built with beginning-to-intermediate R users in mind and is
     optimized for user-friendliness. Advanced R users can already do everything
@@ -16,16 +17,17 @@ Description: The main janitor functions can: perfectly format data.frame column
 URL: https://github.com/sfirke/janitor
 BugReports: https://github.com/sfirke/janitor/issues
 Depends: R (>= 3.1.2)
-Imports: dplyr (>= 0.5.0), tidyr
+Imports: dplyr (>= 0.5.0), tidyr, magrittr
 License: MIT + file LICENSE
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2016-10-31 00:59:27 UTC; SFirke
+Packaged: 2017-05-06 06:41:07 UTC; SFirke
 Author: Sam Firke [aut, cre],
-  Chris Haid [ctb]
+  Chris Haid [ctb],
+  Ryan Knight [ctb]
 Maintainer: Sam Firke <samuel.firke@gmail.com>
 Repository: CRAN
-Date/Publication: 2016-10-31 07:57:06
+Date/Publication: 2017-05-06 09:07:14 UTC
