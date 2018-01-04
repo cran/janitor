@@ -1,6 +1,6 @@
 Package: janitor
 Title: Simple Tools for Examining and Cleaning Dirty Data
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(person("Sam", "Firke", email = "samuel.firke@gmail.com", role = c("aut", "cre")),
     person("Chris", "Haid", email = "chrishaid@gmail.com", role = "ctb"),
     person("Ryan", "Knight", email = "ryangknight@gmail.com", role = "ctb"))
@@ -24,10 +24,10 @@ RoxygenNote: 6.0.1
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2017-05-06 06:41:07 UTC; SFirke
+Packaged: 2018-01-04 21:23:20 UTC; SFirke
 Author: Sam Firke [aut, cre],
   Chris Haid [ctb],
   Ryan Knight [ctb]
 Maintainer: Sam Firke <samuel.firke@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-05-06 09:07:14 UTC
+Date/Publication: 2018-01-04 21:49:02 UTC
