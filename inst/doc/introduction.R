@@ -18,43 +18,12 @@ test_df %>%
 make.names(names(test_df))
 
 ## ------------------------------------------------------------------------
-x <- c("a", "b", "c", "c", NA)
-tabyl(x, sort = TRUE)
-
-## ------------------------------------------------------------------------
-table(x)
-
-## ------------------------------------------------------------------------
 mtcars %>%
-  filter(gear > 3) %>%
-  tabyl(cyl)
-
-## ------------------------------------------------------------------------
-y <- c(1, 1, 2, 1, 2)
-x <- c("a", "a", "b", "b", NA)
-
-crosstab(x, y)
-crosstab(x, y, percent = "row")
-
-## ------------------------------------------------------------------------
-dat <- data.frame(x, y)
-dat %>%
-  crosstab(x, y, percent = "row")
-
-## ---- message=FALSE, results = "hide"------------------------------------
-library(dplyr) ; library(tidyr)
-dat %>%
-  group_by(x, y) %>%
-  tally() %>%
-  mutate(percent = n / sum(n, na.rm = TRUE)) %>%
-  select(-n) %>%
-  spread(y, percent, fill = 0) %>%
-  ungroup()
-
-## ------------------------------------------------------------------------
-mtcars %>%
-  crosstab(cyl, gear) %>%
-  adorn_crosstab()
+  tabyl(gear, cyl) %>%
+  adorn_totals("col") %>%
+  adorn_percentages("row") %>%
+  adorn_pct_formatting(digits = 2) %>%
+  adorn_ns()
 
 ## ------------------------------------------------------------------------
 get_dupes(mtcars, wt, cyl) # or mtcars %>% get_dupes(wt, cyl) if you prefer to pipe
@@ -72,18 +41,8 @@ q %>%
   remove_empty_rows()
 
 ## ------------------------------------------------------------------------
-mtcars %>%
-  crosstab(am, cyl) %>%
-  adorn_totals("row")
-
-## ------------------------------------------------------------------------
-mtcars %>%
-  crosstab(cyl, am) %>%
-  ns_to_percents("col")
-
-## ------------------------------------------------------------------------
 f <- factor(c("strongly agree", "agree", "neutral", "neutral", "disagree", "strongly agree"),
             levels = c("strongly agree", "agree", "neutral", "disagree", "strongly disagree"))
 top_levels(f)
-top_levels(f, n = 1, sort = TRUE)
+top_levels(f, n = 1)
 

@@ -4,22 +4,46 @@
 \alias{clean_names}
 \title{Cleans names of a data.frame.}
 \usage{
-clean_names(dat)
+clean_names(dat, case = c("snake", "lower_camel", "upper_camel",
+  "screaming_snake", "lower_upper", "upper_lower", "all_caps", "small_camel",
+  "big_camel", "old_janitor", "parsed", "mixed"))
 }
 \arguments{
 \item{dat}{the input data.frame.}
+
+\item{case}{The desired target case (default is \code{"snake"}), indicated by these possible values:
+\itemize{
+ \item{\code{"snake"} produces snake_case}
+ \item{\code{"lower_camel"} or \code{"small_camel"} produces lowerCamel}
+ \item{\code{"upper_camel"} or \code{"big_camel"} produces UpperCamel}
+ \item{\code{"screaming_snake"} or \code{"all_caps"} produces ALL_CAPS}
+ \item{\code{"lower_upper"} produces lowerUPPER}
+ \item{\code{"upper_lower"} produces UPPERlower}
+ \item{\code{old_janitor}: legacy compatibility option to preserve behavior of \code{clean_names} prior to addition of the "case" argument(janitor versions <= 0.3.1 )}.  Provided as a quick fix for old scripts broken by the changes to \code{clean_names} in janitor v1.0.
+ \item{\code{"parsed"}, \code{"mixed"}, \code{"none"}, \code{"internal_parsing"}: less-common cases offered by \code{snakecase::to_any_case}.  See \code{\link[snakecase]{to_any_case}} for details.}
+ }}
 }
 \value{
 Returns the data.frame with clean names.
 }
 \description{
-Resulting names are unique and consist only of the \code{_} character, lowercase letters, and numbers.
+Resulting names are unique and consist only of the \code{_} character, numbers, and letters.
+Capitalization preferences can be specified using the \code{case} parameter.
+
+Accented characters are
+transliterated to ASCII.  For example, an "o" with a German umlaut over it becomes "o", and the Spanish character "enye" becomes "n".
 }
 \examples{
 # not run:
 # clean_names(poorly_named_df)
 
-# library(readxl)
+# or pipe in the input data.frame:
+# poorly_named_df \%>\% clean_names()
+
+# if you prefer camelCase variable names:
+# poorly_named_df \%>\% clean_names(., "small_camel")
+
 # not run:
+# library(readxl)
 # readxl("messy_excel_file.xlsx") \%>\% clean_names()
 }
