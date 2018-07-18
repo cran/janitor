@@ -1,9 +1,10 @@
 Package: janitor
 Title: Simple Tools for Examining and Cleaning Dirty Data
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: c(person("Sam", "Firke", email = "samuel.firke@gmail.com", role = c("aut", "cre")),
     person("Chris", "Haid", email = "chrishaid@gmail.com", role = "ctb"),
-    person("Ryan", "Knight", email = "ryangknight@gmail.com", role = "ctb"))
+    person("Ryan", "Knight", email = "ryangknight@gmail.com", role = "ctb"),
+    person("Bill", "Denney", email = "wdenney@humanpredictions.com", role = "ctb"))
 Description: The main janitor functions can: perfectly format data.frame column
     names; provide quick counts of variable combinations (i.e., frequency
     tables and crosstabs); and isolate duplicate records. Other janitor functions
@@ -21,14 +22,15 @@ Imports: dplyr (>= 0.7.0), tidyr (>= 0.7.0), snakecase (>= 0.9.0),
         magrittr, purrr, rlang
 License: MIT + file LICENSE
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-03-22 12:55:11 UTC; SFirke
+Packaged: 2018-07-18 02:49:55 UTC; sam
 Author: Sam Firke [aut, cre],
   Chris Haid [ctb],
-  Ryan Knight [ctb]
+  Ryan Knight [ctb],
+  Bill Denney [ctb]
 Maintainer: Sam Firke <samuel.firke@gmail.com>
 Repository: CRAN
-Date/Publication: 2018-03-22 20:59:45 UTC
+Date/Publication: 2018-07-18 08:00:08 UTC
