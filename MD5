@@ -1,7 +1,7 @@
-98bd3c3de1d052828d691f06be8d9bdc *DESCRIPTION
+acecce234873b32f038bee095fa1d391 *DESCRIPTION
 0f6898d55b3e17e773ce07c36791ab9b *LICENSE
 a510fbf17bb34f2314f844d77999a8d2 *NAMESPACE
-d13345dbd6d91dff9a61ad4162ae38ef *NEWS.md
+de0dd8fef697d46b711b16638222fc54 *NEWS.md
 4ef273e63ba79ecbb4ce731ab6a5c9f7 *R/adorn_crosstab.R
 8a628c023d4bbdd4b7bbc99fb0334500 *R/adorn_ns.R
 d37530b0d334be63bc6794c5e984096b *R/adorn_pct_formatting.R
@@ -13,7 +13,7 @@ e81d1022999a974f62dfbb2439ced9b2 *R/adorn_rounding.R
 fc3645f607823d4a16c9fabaaf933cc7 *R/clean_names.R
 fa59c94c70721498a3680ca4b4584e5d *R/convert_to_NA.R
 eacfaed3d7c779659c893f1e106fc243 *R/crosstab.R
-e65ae075cbeb5f251b727f4c5ff37481 *R/excel_dates.R
+48e5d750943cd48f34a6cd70959366a2 *R/excel_dates.R
 1c2dd0ebf65fbeae250a417adef0a531 *R/get_dupes.R
 e9e8ac8dd105e8689c5654f29840fbe8 *R/get_level_groups.R
 5704f42e3f5fd6295b396bdf1ff4db6b *R/janitor.R
@@ -33,10 +33,10 @@ a27356eccfa3d636c9c65b448060b0a9 *build/vignette.rds
 2928a417daf191ed31fd3413fcedb9ce *inst/doc/introduction.html
 d81db30bb5c6117e8cd6eb42acac94b7 *inst/doc/janitor.R
 c59add294ec4816a05f2df7f9494d33b *inst/doc/janitor.Rmd
-269a51daeb767bdf95884560b7f790c3 *inst/doc/janitor.html
+bd127fa1971c1c7e345e7d5f483a8cfa *inst/doc/janitor.html
 60347d004718735e4cae8f1f1707835b *inst/doc/tabyls.R
 1f9fc2c6aef0e3b63eebaf868b776c70 *inst/doc/tabyls.Rmd
-93709496d4670bb74b68ec58d6d97c56 *inst/doc/tabyls.html
+c4a979b3f39dd02448df73e05da915ba *inst/doc/tabyls.html
 5621e3be8d6552c96ec5af8ea8347b5b *man/add_totals_col.Rd
 654c84923223b35c9032544864c84859 *man/add_totals_row.Rd
 9d2d53b22a8b56bfc5abba07c0b23f44 *man/adorn_crosstab.Rd
@@ -77,7 +77,7 @@ c441ffd6e9baf0b630b72ca3439ab33f *tests/testthat/test-adorn-title.R
 c4dc6f738f61d96930915b853d32a1c5 *tests/testthat/test-clean-NAs.R
 3cbb499dee343cb5d99ff3917cf61c57 *tests/testthat/test-clean-names.R
 13c2304b2cea96684e618e0ad3b4fbc5 *tests/testthat/test-crosstab.R
-30d169f1e3f562901c3073376e9eb045 *tests/testthat/test-date-conversion.R
+d2d4cd4dea9547a64c8917defb63f6a4 *tests/testthat/test-date-conversion.R
 da57b020b19545fd8ae4d8fe07baa48a *tests/testthat/test-get-dupes.R
 4fb976c57c31c479c9960fafe8b339d8 *tests/testthat/test-get-level-groups.R
 a69e41e91d0c3a68c33f1b5467681686 *tests/testthat/test-remove-empties.R
