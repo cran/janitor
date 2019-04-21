@@ -56,3 +56,69 @@ test_that("deprecated functions remove_empty_cols and remove_empty_rows function
       remove_empty_cols())
   )
 })
+
+test_that("remove_empty leaves matrices as matrices", {
+  mat <- matrix(c(NA, NA, NA, rep(0, 3)), ncol = 2, byrow = TRUE)
+  expect_equal(remove_empty(mat), matrix(c(NA, rep(0, 3)), ncol=2),
+               info="remove_empty with a matrix returns a matrix")
+})
+
+test_that("remove_empty leaves single-column results as the original class", {
+  mat <- matrix(c(NA, NA, NA, 0), ncol = 2, byrow = FALSE)
+  expect_equal(remove_empty(mat),
+               matrix(0, ncol=1),
+               info="remove_empty with a matrix that should return a single row and column still returns a matrix")
+  df <- data.frame(A=NA, B=c(NA, 0))
+  expect_equal(remove_empty(df),
+               data.frame(B=0, row.names=2L),
+               info="remove_empty with a data.frame that should return a single row and column still returns a data.frame")
+})
+
+test_that("remove_empty single-column input results as the original class", {
+  mat <- matrix(c(NA, NA, NA, 0), ncol = 1, byrow = FALSE)
+  expect_equal(remove_empty(mat),
+               matrix(0, ncol=1),
+               info="remove_empty with a matrix that should return a single row and column still returns a matrix")
+  df <- data.frame(B=c(NA, 0))
+  expect_equal(remove_empty(df),
+               data.frame(B=0, row.names=2L),
+               info="remove_empty with a data.frame that should return a single row and column still returns a data.frame")
+})
+
+test_that("remove_constant", {
+  expect_equal(
+    remove_constant(data.frame(A=1:2, B=1:2)),
+    data.frame(A=1:2, B=1:2),
+    info="Everything kept."
+  )
+  expect_equal(
+    remove_constant(data.frame(A=c(1, 1), B=c(2, 2))),
+    data.frame(A=1:2)[,-1],
+    info="All rows are kept, all columns are removed."
+  )
+  expect_equal(
+    remove_constant(data.frame(A=c(1, 1), B=c(2, 3))),
+    data.frame(B=2:3),
+    info="One column kept (not accidentally turned into a vector)"
+  )
+  expect_equal(
+    remove_constant(data.frame(A=NA, B=1:2)),
+    data.frame(B=1:2),
+    info="NA is dropped"
+  )
+  expect_equal(
+    remove_constant(data.frame(A=NA, B=c(NA, 1), C=c(1, NA), D=c(1, 1))),
+    data.frame(B=c(NA, 1), C=c(1, NA)),
+    info="NA with other values is kept"
+  )
+  expect_equal(
+    remove_constant(data.frame(A=NA, B=c(NA, 1, 2), C=c(1, 2, NA), D=c(1, 1, 1), E=c(1, NA, NA), F=c(NA, 1, 1), G=c(1, NA, 1)), na.rm=FALSE),
+    data.frame(B=c(NA, 1, 2), C=c(1, 2, NA), E=c(1, NA, NA), F=c(NA, 1, 1), G=c(1, NA, 1)),
+    info="NA with other values is kept without na.rm"
+  )
+  expect_equal(
+    remove_constant(data.frame(A=NA, B=c(NA, 1, 2), C=c(1, 2, NA), D=c(1, 1, 1), E=c(1, NA, NA), F=c(NA, 1, 1), G=c(1, NA, 1)), na.rm=TRUE),
+    data.frame(B=c(NA, 1, 2), C=c(1, 2, NA)),
+    info="NA with other values is kept with na.rm"
+  )
+})

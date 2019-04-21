@@ -2,11 +2,15 @@
 % Please edit documentation in R/clean_names.R
 \name{clean_names}
 \alias{clean_names}
+\alias{clean_names.default}
 \title{Cleans names of a data.frame.}
 \usage{
-clean_names(dat, case = c("snake", "lower_camel", "upper_camel",
-  "screaming_snake", "lower_upper", "upper_lower", "all_caps",
-  "small_camel", "big_camel", "old_janitor", "parsed", "mixed"))
+clean_names(dat, case)
+
+\method{clean_names}{default}(dat, case = c("snake", "lower_camel",
+  "upper_camel", "screaming_snake", "lower_upper", "upper_lower",
+  "all_caps", "small_camel", "big_camel", "old_janitor", "parsed", "mixed",
+  "none"))
 }
 \arguments{
 \item{dat}{the input data.frame.}
@@ -20,7 +24,7 @@ clean_names(dat, case = c("snake", "lower_camel", "upper_camel",
  \item{\code{"lower_upper"} produces lowerUPPER}
  \item{\code{"upper_lower"} produces UPPERlower}
  \item{\code{old_janitor}: legacy compatibility option to preserve behavior of \code{clean_names} prior to addition of the "case" argument(janitor versions <= 0.3.1 )}.  Provided as a quick fix for old scripts broken by the changes to \code{clean_names} in janitor v1.0.
- \item{\code{"parsed"}, \code{"mixed"}, \code{"none"}, \code{"internal_parsing"}: less-common cases offered by \code{snakecase::to_any_case}.  See \code{\link[snakecase]{to_any_case}} for details.}
+ \item{\code{"parsed"}, \code{"mixed"}, \code{"none"}: less-common cases offered by \code{snakecase::to_any_case}.  See \code{\link[snakecase]{to_any_case}} for details.}
  }}
 }
 \value{
@@ -32,6 +36,10 @@ Capitalization preferences can be specified using the \code{case} parameter.
 
 Accented characters are
 transliterated to ASCII.  For example, an "o" with a German umlaut over it becomes "o", and the Spanish character "enye" becomes "n".
+
+This function takes and returns a data.frame, for ease of piping with  \code{`\%>\%`}.  
+For the underlying function that works on a character vector of names,
+see \code{\link[janitor]{make_clean_names}}.
 }
 \examples{
 # not run:
@@ -45,5 +53,5 @@ transliterated to ASCII.  For example, an "o" with a German umlaut over it becom
 
 # not run:
 # library(readxl)
-# readxl("messy_excel_file.xlsx") \%>\% clean_names()
+# read_excel("messy_excel_file.xlsx") \%>\% clean_names()
 }

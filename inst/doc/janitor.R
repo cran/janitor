@@ -16,6 +16,21 @@ test_df %>%
 make.names(names(test_df))
 
 ## ------------------------------------------------------------------------
+df1 <- data.frame(a = 1:2, b = c("big", "small")) # a factor by default
+df2 <- data.frame(a = 10:12, b = c("medium", "small", "big"), c = 0, stringsAsFactors = FALSE)
+df3 <- df1 %>%
+  dplyr::mutate(b = as.character(b))
+
+compare_df_cols(df1, df2, df3)
+
+compare_df_cols(df1, df2, df3, return = "mismatch")
+compare_df_cols(df1, df2, df3, return = "mismatch", bind_method = "rbind") # default is dplyr::bind_rows
+
+## ------------------------------------------------------------------------
+compare_df_cols_same(df1, df3)
+compare_df_cols_same(df2, df3)
+
+## ------------------------------------------------------------------------
 mtcars %>%
   tabyl(gear, cyl) %>%
   adorn_totals("col") %>%
@@ -28,11 +43,18 @@ mtcars %>%
 get_dupes(mtcars, wt, cyl) # or mtcars %>% get_dupes(wt, cyl) if you prefer to pipe
 
 ## ------------------------------------------------------------------------
+tibble::as_tibble(iris, .name_repair = janitor::make_clean_names)
+
+## ------------------------------------------------------------------------
 q <- data.frame(v1 = c(1, NA, 3),
                 v2 = c(NA, NA, NA),
                 v3 = c("a", NA, "b"))
 q %>%
   remove_empty(c("rows", "cols"))
+
+## ------------------------------------------------------------------------
+a <- data.frame(good = 1:3, boring = "the same")
+a %>% remove_constant()
 
 ## ------------------------------------------------------------------------
 nums <- c(2.5, 3.5)
