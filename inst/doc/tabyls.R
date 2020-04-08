@@ -73,6 +73,25 @@ percent_above_165_cm <- humans %>%
 percent_above_165_cm %>%
   adorn_pct_formatting()
 
+## ----tidyselect, warning = FALSE, message = FALSE------------------------
+mtcars %>%
+  count(cyl, gear) %>%
+  rename(proportion = n) %>%
+  adorn_percentages("col", na.rm = TRUE, proportion) %>%
+  adorn_pct_formatting(,,,proportion) # the commas say to use the default values of the other arguments
+
+## ----dont_total, warning = FALSE, message = FALSE------------------------
+cases <- data.frame(
+  region = c("East, West"),
+  year = 2015,
+  recovered = c(125, 87),
+  died = c(13, 12),
+  stringsAsFactors = FALSE
+)
+
+cases %>%
+    adorn_totals(c("col", "row"), fill = "-", na.rm = TRUE, name = "Total Cases", recovered:died)
+
 ## ----more_non_tabyls, warning = FALSE, message = FALSE-------------------
 library(tidyr) # for spread()
 mpg_by_cyl_and_am <- mtcars %>%

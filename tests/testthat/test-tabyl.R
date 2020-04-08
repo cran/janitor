@@ -183,6 +183,13 @@ test_that("grouped data.frame inputs are handled (#125)", {
   )
 })
 
+
+test_that("if called on non-existent vector, returns useful error message", {
+  expect_error(tabyl(mtcars$moose), "object mtcars\\$moose not found")
+  expect_error(tabyl(moose), "object 'moose' not found")
+  expect_error(mtcars %>% tabyl(moose))
+})
+
 test_that("if called on data.frame with no or irregular columns specified, returns informative error message", {
   expect_error(tabyl(mtcars), "if calling on a data.frame, specify unquoted column names(s) to tabulate.  Did you mean to call tabyl() on a vector?",
     fixed = TRUE
@@ -218,7 +225,8 @@ test_that("show_missing_levels parameter works", {
     list(lvl1 = data.frame(
       a = c("hi", "lo"),
       big = c(0, 0),
-      small = c(1, 0)
+      small = c(1, 0),
+      stringsAsFactors = TRUE
     ) %>% as_tabyl(2, "a", "b"))
   )
   expect_equal(
@@ -305,17 +313,32 @@ test_that("NA levels get moved to the last column in the data.frame, are suppres
     filter(species == "Human") %>%
     tabyl(eye_color, skin_color, gender, show_missing_levels = TRUE)), 2)
 
-  # If there is NA, it does appear in split list
-  expect_equal(length(starwars %>%
-    tabyl(eye_color, skin_color, gender, show_missing_levels = TRUE)), 5)
-  expect_equal(length(starwars %>%
-    tabyl(eye_color, skin_color, gender, show_missing_levels = FALSE)), 5)
-
-  # NA level in the list gets suppressed if show_na = FALSE.  Should have one less level if NA is suppressed.
-  expect_equal(length(starwars %>%
-    tabyl(eye_color, skin_color, gender, show_na = TRUE)), 5)
-  expect_equal(length(starwars %>%
-    tabyl(eye_color, skin_color, gender, show_na = FALSE)), 4)
+  # The starwars data set changed in dplyr v 1.0.0 so have two blocks of tests:
+  if(packageVersion("dplyr") > package_version("0.8.5")){
+    # If there is NA, it does appear in split list
+    expect_equal(length(starwars %>%
+                          tabyl(eye_color, skin_color, gender, show_missing_levels = TRUE)), 3)
+    expect_equal(length(starwars %>%
+                          tabyl(eye_color, skin_color, gender, show_missing_levels = FALSE)), 3)
+    
+    # NA level in the list gets suppressed if show_na = FALSE.  Should have one less level if NA is suppressed.
+    expect_equal(length(starwars %>%
+                          tabyl(eye_color, skin_color, gender, show_na = TRUE)), 3)
+    expect_equal(length(starwars %>%
+                          tabyl(eye_color, skin_color, gender, show_na = FALSE)), 2)
+  } else {
+    # If there is NA, it does appear in split list
+    expect_equal(length(starwars %>%
+                          tabyl(eye_color, skin_color, gender, show_missing_levels = TRUE)), 5)
+    expect_equal(length(starwars %>%
+                          tabyl(eye_color, skin_color, gender, show_missing_levels = FALSE)), 5)
+    
+    # NA level in the list gets suppressed if show_na = FALSE.  Should have one less level if NA is suppressed.
+    expect_equal(length(starwars %>%
+                          tabyl(eye_color, skin_color, gender, show_na = TRUE)), 5)
+    expect_equal(length(starwars %>%
+                          tabyl(eye_color, skin_color, gender, show_na = FALSE)), 4)
+  }
 })
 
 test_that("zero-row and fully-NA inputs are handled", {
@@ -363,3 +386,30 @@ test_that("3-way tabyl with 3rd var factor is listed in right order, #250", {
   z <- z %>% dplyr::filter(! cyl %in% "4")
   expect_equal(names(tabyl(z, am, gear, cyl)), c("8", "6", "NA_"))
 })
+
+test_that("factor ordering of columns is correct in 2-way tabyl", {
+  two_factors <- data.frame(
+    x = factor(c("big", "small", "medium", "small"),
+               levels = c("small", "medium", "big")),
+    y = factor(c("hi", "hi", "hi", "lo"),
+               levels = c("lo", "hi"))
+  )
+  expect_equal(
+    two_factors %>%
+      tabyl(x, y) %>%
+      names(),
+    c("x", "lo", "hi")
+  )
+})
+
+test_that("empty strings converted to _emptystring", {
+  x <- mtcars
+  x$cyl[1:2] <- c("", NA_character_)
+  expect_equal(
+    x %>%
+      tabyl(am, cyl) %>%
+      names,
+    c("am", "4", "6", "8", "emptystring_", "NA_")
+  )
+})
+

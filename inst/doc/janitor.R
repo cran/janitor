@@ -68,6 +68,9 @@ excel_numeric_to_date(41103.01, include_time = TRUE) # returns POSIXlt object
 excel_numeric_to_date(41103.01, date_system = "mac pre-2011")
 
 ## ------------------------------------------------------------------------
+convert_to_date(c("2020-02-29", "40000.1"))
+
+## ------------------------------------------------------------------------
 dirt <- data.frame(X_1 = c(NA, "ID", 1:3),
            X_2 = c(NA, "Value", 4:6))
 

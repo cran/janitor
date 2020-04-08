@@ -41,22 +41,6 @@ test_that("missing data.frame input throws its error before messages about 'whic
                fixed = TRUE)
 })
 
-# Kind of superficial given that remove_empty_* have been refactored to call remove_empty() themselves, but might as well keep until deprecated functions are removed
-test_that("deprecated functions remove_empty_cols and remove_empty_rows function as expected", {
-  expect_equal(
-    dat %>%
-      remove_empty("rows"),
-    suppressWarnings(dat %>%
-      remove_empty_rows())
-  )
-  expect_equal(
-    dat %>%
-      remove_empty("cols"),
-    suppressWarnings(dat %>%
-      remove_empty_cols())
-  )
-})
-
 test_that("remove_empty leaves matrices as matrices", {
   mat <- matrix(c(NA, NA, NA, rep(0, 3)), ncol = 2, byrow = TRUE)
   expect_equal(remove_empty(mat), matrix(c(NA, rep(0, 3)), ncol=2),
@@ -120,5 +104,57 @@ test_that("remove_constant", {
     remove_constant(data.frame(A=NA, B=c(NA, 1, 2), C=c(1, 2, NA), D=c(1, 1, 1), E=c(1, NA, NA), F=c(NA, 1, 1), G=c(1, NA, 1)), na.rm=TRUE),
     data.frame(B=c(NA, 1, 2), C=c(1, 2, NA)),
     info="NA with other values is kept with na.rm"
+  )
+  expect_equal(
+    remove_constant(tibble(A=NA, B=c(NA, 1, 2), C=1)),
+    tibble(B=c(NA, 1, 2)),
+    info="tibbles are correctly handled"
+  )
+})
+
+test_that("Messages are accurate with remove_empty and remove_constant", {
+  expect_message(
+    remove_empty(data.frame(A=NA, B=1), which="cols", quiet=FALSE),
+    regexp="Removing 1 empty columns of 2 columns total (Removed: A).",
+    fixed=TRUE
+  )
+  expect_message(
+    remove_empty(data.frame(A=NA, B=1, C=NA), which="cols", quiet=FALSE),
+    regexp="Removing 2 empty columns of 3 columns total (Removed: A, C).",
+    fixed=TRUE
+  )
+  expect_message(
+    remove_empty(data.frame(A=NA, B=c(1, NA)), which="rows", quiet=FALSE),
+    regexp="Removing 1 empty rows of 2 rows total (50%).",
+    fixed=TRUE
+  )
+  expect_message(
+    remove_empty(matrix(c(NA, NA, 1, NA), nrow=2), which="cols", quiet=FALSE),
+    regexp="Removing 1 empty columns of 2 columns total (50%).",
+    fixed=TRUE
+  )
+  expect_message(
+    remove_constant(matrix(c(NA, NA, 1, NA), nrow=2), quiet=FALSE),
+    regexp="Removing 1 constant columns of 2 columns total (50%).",
+    fixed=TRUE,
+    info="Unnamed, constant columns"
+  )
+  expect_silent(
+    remove_empty(data.frame(A=NA, B=1), which="cols", quiet=TRUE)
+  )
+  expect_silent(
+    remove_empty(data.frame(A=NA, B=c(1, NA)), which="rows", quiet=TRUE)
+  )
+  expect_message(
+   remove_constant(mtcars, quiet = FALSE),
+   regexp="No constant columns to remove.",
+   fixed=TRUE,
+   info="No constant columns to remove"
+  )
+  expect_message(
+    remove_empty(mtcars, quiet = FALSE),
+    regexp="No empty columns to remove.",
+    fixed=TRUE,
+    info="No empty columns to remove"
   )
 })
