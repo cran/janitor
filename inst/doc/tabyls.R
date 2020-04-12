@@ -1,12 +1,12 @@
-## ----chunk_options, include = FALSE--------------------------------------
+## ----chunk_options, include = FALSE-------------------------------------------
 knitr::opts_chunk$set(collapse = T, comment = "#>")
 
-## ----clean_starwars, warning = FALSE, message = FALSE--------------------
+## ----clean_starwars, warning = FALSE, message = FALSE-------------------------
 library(dplyr)
 humans <- starwars %>%
   filter(species == "Human")
 
-## ----one_way-------------------------------------------------------------
+## ----one_way------------------------------------------------------------------
 library(janitor)
 
 t1 <- humans %>%
@@ -14,36 +14,36 @@ t1 <- humans %>%
 
 t1
 
-## ----one_way_vector------------------------------------------------------
+## ----one_way_vector-----------------------------------------------------------
 x <- c("big", "big", "small", "small", "small", NA)
 tabyl(x)
 
-## ----one_way_adorns------------------------------------------------------
+## ----one_way_adorns-----------------------------------------------------------
 t1 %>%
   adorn_totals("row") %>%
   adorn_pct_formatting()
 
-## ----two_way-------------------------------------------------------------
+## ----two_way------------------------------------------------------------------
 t2 <- humans %>%
   tabyl(gender, eye_color)
 
 t2
 
-## ----two_way_adorns------------------------------------------------------
+## ----two_way_adorns-----------------------------------------------------------
 
 t2 %>%
   adorn_percentages("row") %>%
   adorn_pct_formatting(digits = 2) %>%
   adorn_ns()
 
-## ----three_Way-----------------------------------------------------------
+## ----three_Way----------------------------------------------------------------
 t3 <- humans %>%
   tabyl(eye_color, skin_color, gender)
 
 # the result is a tabyl of eye color x skin color, split into a list by gender
 t3 
 
-## ----three_way_adorns, warning = FALSE, message = FALSE------------------
+## ----three_way_adorns, warning = FALSE, message = FALSE-----------------------
 library(purrr)
 humans %>%
   tabyl(eye_color, skin_color, gender, show_missing_levels = FALSE) %>%
@@ -54,7 +54,7 @@ humans %>%
   adorn_title
 
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 humans %>%
   tabyl(gender, eye_color) %>%
   adorn_totals(c("row", "col")) %>%
@@ -65,7 +65,7 @@ humans %>%
   knitr::kable()
 
 
-## ----first_non_tabyl-----------------------------------------------------
+## ----first_non_tabyl----------------------------------------------------------
 percent_above_165_cm <- humans %>%
   group_by(gender) %>%
   summarise(pct_above_165_cm = mean(height > 165, na.rm = TRUE))
@@ -73,14 +73,14 @@ percent_above_165_cm <- humans %>%
 percent_above_165_cm %>%
   adorn_pct_formatting()
 
-## ----tidyselect, warning = FALSE, message = FALSE------------------------
+## ----tidyselect, warning = FALSE, message = FALSE-----------------------------
 mtcars %>%
   count(cyl, gear) %>%
   rename(proportion = n) %>%
   adorn_percentages("col", na.rm = TRUE, proportion) %>%
   adorn_pct_formatting(,,,proportion) # the commas say to use the default values of the other arguments
 
-## ----dont_total, warning = FALSE, message = FALSE------------------------
+## ----dont_total, warning = FALSE, message = FALSE-----------------------------
 cases <- data.frame(
   region = c("East, West"),
   year = 2015,
@@ -92,7 +92,7 @@ cases <- data.frame(
 cases %>%
     adorn_totals(c("col", "row"), fill = "-", na.rm = TRUE, name = "Total Cases", recovered:died)
 
-## ----more_non_tabyls, warning = FALSE, message = FALSE-------------------
+## ----more_non_tabyls, warning = FALSE, message = FALSE------------------------
 library(tidyr) # for spread()
 mpg_by_cyl_and_am <- mtcars %>%
   group_by(cyl, am) %>%
@@ -101,7 +101,7 @@ mpg_by_cyl_and_am <- mtcars %>%
 
 mpg_by_cyl_and_am
 
-## ----add_the_Ns----------------------------------------------------------
+## ----add_the_Ns---------------------------------------------------------------
 mpg_by_cyl_and_am %>%
   adorn_rounding() %>%
   adorn_ns(

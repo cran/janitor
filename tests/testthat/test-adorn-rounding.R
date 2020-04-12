@@ -28,19 +28,19 @@ test_that("rounding parameter works", {
       stringsAsFactors = FALSE
     )
   )
-  # Commenting out, CRAN reports this test fails on Windows R-Devel but I'm unable to replicate it or troubleshoot
-  # It passes on Rhub's Windows R-devel check so maybe this is a CRAN problem?
-  # expect_equal(
-  #   y %>%
-  #     adorn_rounding(digits = 1) %>% # default rounding: "half to even"
-  #     untabyl(),
-  #   data.frame(
-  #     a = c("x", "y"),
-  #     x = c(0.5, 0.0),
-  #     y = c(0.0, 0.4),
-  #     stringsAsFactors = FALSE
-  #   )
-  # )
+  # Test failing on CRAN and only there
+  skip_on_cran()
+  expect_equal(
+    y %>%
+      adorn_rounding(digits = 1) %>% # default rounding: "half to even"
+      untabyl(),
+    data.frame(
+      a = c("x", "y"),
+      x = c(0.5, 0.0),
+      y = c(0.0, 0.4),
+      stringsAsFactors = FALSE
+    )
+  )
 })
 
 test_that("digit control succeeds", {
