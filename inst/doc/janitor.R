@@ -16,8 +16,8 @@ test_df %>%
 make.names(names(test_df))
 
 ## -----------------------------------------------------------------------------
-df1 <- data.frame(a = 1:2, b = c("big", "small")) # a factor by default
-df2 <- data.frame(a = 10:12, b = c("medium", "small", "big"), c = 0, stringsAsFactors = FALSE)
+df1 <- data.frame(a = 1:2, b = c("big", "small"))
+df2 <- data.frame(a = 10:12, b = c("medium", "small", "big"), c = 0, stringsAsFactors = TRUE) # here, column b is a factor
 df3 <- df1 %>%
   dplyr::mutate(b = as.character(b))
 

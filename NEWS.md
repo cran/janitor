@@ -1,8 +1,38 @@
-# janitor 2.0.1 (unreleased)
+# janitor 2.1.0 (2021-01-04)
+
+## New features
+
+* The `adorn_totals()` function now accepts the special argument `fill = NA`, which will insert a class-appropriate `NA` value into each column that isn't being totaled.  This preserves the class of each column; previously they were all convered to character. (thanks **@hamstr147** for implementing in #404 and **@ymer** for reporting in #298). 
+
+* `adorn_totals()` now takes the value of `"both"` for the `where` argument.  That is, `adorn_totals("both")` is a shorter version of `adorn_totals(c("col", "row"))`.  (#362, thanks to **@svgsstats** for implementing and **@sfd99** for suggesting).
+
+* `adorn_totals()` now optionally accepts separate name values for a totals row and a totals column.  The default remains that a single name, `"Total"`, is applied to both.  But now if a vector of two strings is passed to the `name` parameter, the first one will be used as the row heading (in column 1) and the second will be used as the column heading. (Thanks **@francisbarton** for suggesting in #359 and implementing in #413.)
+
+
+
+## Bug fixes
+
+* Fixed rounding issue in round_half_up() function (#396, thanks to **@JJSteph**)
+
+* Warnings for incomplete argument names are fixed (fix #367, thanks to **@pabecerra** for reporting and **@billdenney** for fixing)
+
+* 3-way tabyls with factors have columns and rows sorted in the correct order, by factor level (#379).
+
+* Transliteration from extended ASCII (character codes >127) to printable ASCII (character codes <=127) is now better supported (#389, thanks to **@dcorynia** for reporting and **@billdenney** for fixing)
+
+* `clean_names` called on a grouped tibble now also changes the names of the grouping variable(s), in addition to the column names (#260, thanks **@CerebralMastication** for reporting and the tidyverse team for fixing).
+
+* Omitting a numeric column of a tibble when using the `...` select in `adorn_totals()` now succeeds (#388)
+
+* A call to make a 3-way `tabyl()` now succeeds when the first variable is of class `ordered` (#386)
+
+* If a totals row and/or column is present on a tabyl as a result of `adorn_totals()`, the functions `chisq.test()` and `fisher.test()` drop the totals and print a warning before proceding with the calculations (#385).
+
+# janitor 2.0.1 (2020-04-12)
 
 ## Bug fixes and Breaking changes
 
-Transliteration of characters within `make_clean_names()` now operates across operating systems, independent of differences in `stringi` installations (Fix #365, thanks to @eamoncaddigan for reporting and @billdenney for fixing).
+Transliteration of characters within `make_clean_names()` now operates across operating systems, independent of differences in `stringi` installations (Fix #365, thanks to **@eamoncaddigan** for reporting and **@billdenney** for fixing).
 
 This bug patch represents a breaking change with the way that `make_clean_names()` worked in janitor versions 1.2.1.9000 and 2.0.0 as the transliterations are now more generalized and follow a more best-practice approach to transliterating to ASCII.
 
@@ -164,7 +194,7 @@ No further changes are planned to `clean_names()` and its results should be stab
   - Thanks to **@tazinho**, who wrote the [snakecase](https://github.com/Tazinho/snakecase/) package that janitor depends on to do this, as well as the patch to incorporate it into `clean_names()`.  And thanks to **@maelle** for proposing this feature.
 
 
-- Launched the janitor documentation website: [http://sfirke.github.io/janitor](http://sfirke.github.io/janitor).  Thanks to the [pkgdown](https://github.com/r-lib/pkgdown) package.
+- Launched the janitor documentation website: [http://sfirke.github.io/janitor](http://sfirke.github.io/janitor/).  Thanks to the [pkgdown](https://github.com/r-lib/pkgdown/) package.
 
 - Deprecated the functions `remove_empty_rows()` and `remove_empty_cols()`, which are replaced by the single function `remove_empty()`. [(#100)](https://github.com/sfirke/janitor/issues/100)
   - To encourage transparency, `remove_empty()` prints a message if no value is supplied for the `which` argument; to suppress this, supply a value to `which`, even if it's the default `c("rows", "cols")`.
@@ -174,7 +204,7 @@ No further changes are planned to `clean_names()` and its results should be stab
 
 ## Minor features
 
-- The utility function `round_half_up()` is now exported for public use.  It's an exact implementation of [http://stackoverflow.com/questions/12688717/round-up-from-5-in-r/12688836#12688836](http://stackoverflow.com/questions/12688717/round-up-from-5-in-r/12688836#12688836), written by **@mrdwab**.
+- The utility function `round_half_up()` is now exported for public use.  It's an exact implementation of [https://stackoverflow.com/questions/12688717/round-up-from-5-in-r/12688836#12688836/](https://stackoverflow.com/questions/12688717/round-up-from-5-in-r/12688836#12688836/), written by **@mrdwab**.
 - `tabyl` objects now print with row numbers suppressed
 - `clean_names()` now retains the character `#` as `"number"` in the resulting names
 

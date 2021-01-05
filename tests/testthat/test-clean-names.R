@@ -70,6 +70,8 @@ test_that("All scenarios for make_clean_names", {
     make_clean_names("€"),
     "x"
   )
+  # This test will fail for some locales because the ascii translation is
+  # required to make the function locale-independent.
   expect_equal(
     make_clean_names("ação", ascii=FALSE),
     "acao"
@@ -123,6 +125,29 @@ test_that("All scenarios for make_clean_names", {
     make_clean_names("a/b", replace=c("/"="_per_")),
     "a_per_b",
     info="Custom replacement"
+  )
+  
+  expect_equal(
+    make_clean_names("m\xb6"),
+    "m",
+    info="ASCII that is not in the expected range without being replaceable is removed"
+  )
+  
+  # Fix issue #388 (that issue was specific to \xb2)
+  # expect_equal(
+  #   make_clean_names("m\x83\x84\x85\x86\x87\xa1"),
+  #   "mf",
+  #   info="extended ASCII test 1"
+  # )
+  # expect_equal(
+  #   make_clean_names("m\xa9\xaa\xae\xb2\xb3\xb5\xbc\xbd\xbe\xc0"),
+  #   "m_c_a_r_23m1_41_23_4a",
+  #   info="extended ASCII test 2"
+  # )
+  expect_equal(
+    make_clean_names("m\u00b2"),
+    "m2",
+    info="Convert Unicode superscript 2 to regular 2"
   )
 })
 
@@ -457,7 +482,7 @@ test_that("Work around incomplete stringi transliterators (Fix #365)", {
   options(janitor_warn_transliterators=NULL)
   expect_warning(
     available_transliterators("foo"),
-    regex="Some transliterators to convert characters in names are not available"
+    regexp="Some transliterators to convert characters in names are not available"
   )
   # The warning only occurs once per session
   expect_silent(
@@ -467,4 +492,11 @@ test_that("Work around incomplete stringi transliterators (Fix #365)", {
     available_transliterators("foo"),
     ""
   )
+})
+
+test_that("groupings are preserved, #260", {
+  df_grouped <- iris %>% dplyr::group_by(Sepal.Length, Sepal.Width) # nonsense for analysis but doesn't matter
+  df_grouped_renamed <- df_grouped %>% clean_names(case = "lower_camel")
+  expect_equal(group_vars(df_grouped_renamed), c("sepalLength", "sepalWidth")) # group got renamed
+  expect_equal(names(df_grouped_renamed), c("sepalLength", "sepalWidth", "petalLength", "petalWidth", "species"))
 })

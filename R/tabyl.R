@@ -42,7 +42,8 @@ tabyl <- function(dat, ...) UseMethod("tabyl")
 #' @inheritParams tabyl
 #' @export
 #' @rdname tabyl
-# retain this method for calling tabyl() on plain vectors
+# this method runs when tabyl() is called on plain vectors; tabyl_1way
+# also reverts to this method
 
 tabyl.default <- function(dat, show_na = TRUE, show_missing_levels = TRUE, ...) {
   if (is.list(dat) && !"data.frame" %in% class(dat)) {
@@ -65,6 +66,14 @@ tabyl.default <- function(dat, show_na = TRUE, show_missing_levels = TRUE, ...) 
     var_name <- paste(var_name, collapse = "")
   }
 
+  # if show_na is not length-1 logical, error helpfully (#377)
+  if(length(show_na) > 1 || !inherits(show_na, "logical")){
+    stop("The value supplied to the \"show_na\" argument must be TRUE or FALSE.\n\nDid you try to call tabyl on two vectors, like tabyl(data$var1, data$var2) ? To create a two-way tabyl, the two vectors must be in the same data.frame, and the function should be called like this: \n
+         tabyl(data, var1, var2)
+         or
+         data %>% tabyl(var1, var2).  \n\nSee ?tabyl for more.")
+  }
+  
   # calculate initial counts table
   # convert vector to a 1 col data.frame
   if (mode(dat) %in% c("logical", "numeric", "character", "list") && !is.matrix(dat)) {
@@ -74,17 +83,8 @@ tabyl.default <- function(dat, show_na = TRUE, show_missing_levels = TRUE, ...) 
     }
     dat_df <- data.frame(dat, stringsAsFactors = is.factor(dat))
     names(dat_df)[1] <- "dat"
-
-    # suppress a dplyr-specific warning message related to NA values in factors
-    # the suggestion to use forcats::fct_explicit_na is unnecessary and confusing
-    # source: https://stackoverflow.com/a/16521046/4470365
-    withCallingHandlers({
-      result <- dat_df %>% dplyr::count(dat)
-    }, warning = function(w) {
-      if (endsWith(conditionMessage(w), "fct_explicit_na\`"))
-        invokeRestart("muffleWarning")
-    })
-
+    result <- dat_df %>% dplyr::count(dat)
+  
     if (is.factor(dat) && show_missing_levels) {
       expanded <- tidyr::expand(result, dat)
       result <- merge( # can't use left_join b/c NA matching changed in 0.6.0
@@ -168,7 +168,6 @@ tabyl_1way <- function(dat, var1, show_na = TRUE, show_missing_levels = TRUE) {
   arguments$dat <- x[1]
   arguments$show_na <- show_na
   arguments$show_missing_levels <- show_missing_levels
-
   do.call(tabyl.default,
     args = arguments
   )
@@ -189,15 +188,8 @@ tabyl_2way <- function(dat, var1, var2, show_na = TRUE, show_missing_levels = TR
       dplyr::slice(0))
   }
 
-  # Suppress unnecessary dplyr warning - see this same code above
-  # in tabyl.default for more explanation
-  withCallingHandlers({
     tabl <- dat %>%
       dplyr::count(!! var1, !! var2)
-  }, warning = function(w) {
-    if (endsWith(conditionMessage(w), "fct_explicit_na\`"))
-      invokeRestart("muffleWarning")
-  })
 
   # Optionally expand missing factor levels.
   if (show_missing_levels) {
@@ -247,7 +239,7 @@ tabyl_3way <- function(dat, var1, var2, var3, show_na = TRUE, show_missing_level
   # grab class of 1st variable to restore it later
   col1_class <- class(dat[[1]])
   col1_levels <- NULL
-  if (col1_class %in% "factor") {
+  if ("factor" %in% col1_class) {
     col1_levels <- levels(dat[[1]])
   }
 
@@ -260,16 +252,9 @@ tabyl_3way <- function(dat, var1, var2, var3, show_na = TRUE, show_missing_level
     }
   }
 
-  if (!show_missing_levels) { # this shows missing factor levels, to make the crosstabs consistent across each data.frame in the list based on values of var3
-    if (is.factor(dat[[1]])) {
-      dat[[1]] <- as.character(dat[[1]])
-    }
-    if (is.factor(dat[[2]])) {
-      dat[[2]] <- as.character(dat[[2]])
-    }
-  } else {
-    dat[[1]] <- as.factor(dat[[1]])
-    dat[[2]] <- as.factor(dat[[2]])
+  if (show_missing_levels) { # needed to have each crosstab in the list aware of all values in the pre-split variables
+   dat[[1]] <- as.factor(dat[[1]])
+   dat[[2]] <- as.factor(dat[[2]])
   }
 
   result <- split(dat, dat[[rlang::quo_name(var3)]]) %>%
@@ -300,9 +285,13 @@ handle_if_special_names_used <- function(dat) {
 # reset the 1st col's class of a data.frame to a provided class
 # also reset in tabyl's core
 reset_1st_col_status <- function(dat, new_class, lvls) {
-  if (new_class %in% "factor") {
-    dat[[1]] <- factor(dat[[1]], levels = lvls)
-    attr(dat, "core")[[1]] <- factor(attr(dat, "core")[[1]], levels = lvls)
+  if ("factor" %in% new_class) {
+    dat[[1]] <- factor(dat[[1]],
+                       levels = lvls,
+                       ordered = ("ordered" %in% new_class))
+    attr(dat, "core")[[1]] <- factor(attr(dat, "core")[[1]],
+                                     levels = lvls,
+                                     ordered = ("ordered" %in% new_class))
   } else {
     dat[[1]] <- as.character(dat[[1]]) # first do as.character in case eventual class is numeric
     class(dat[[1]]) <- new_class

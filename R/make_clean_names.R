@@ -13,13 +13,16 @@
 #' to ASCII.  For example, an "o" with a German umlaut over it becomes "o", and
 #' the Spanish character "enye" becomes "n".
 #'
-#' The order of operations is: \code{replace}, (optional) ASCII conversion,
-#' removing initial spaces and punctuation, apply \code{base::make.names()},
-#' apply \code{\link[snakecase]{to_any_case}}, and add numeric suffixes to
-#' duplicates.
+#' The order of operations is: make replacements, (optional) ASCII conversion,
+#' remove initial spaces and punctuation, apply \code{base::make.names()},
+#' apply \code{snakecase::to_any_case}, and add numeric suffixes 
+#' to resolve any duplicated names.
 #'
-#' See the documentation for \code{snakecase::to_any_case} for more about how
-#' to control its behavior.
+#' This function relies on \code{snakecase::to_any_case} and can take advantage of 
+#' its versatility.  For instance, an abbreviation like "ID" can have its 
+#' capitalization preserved by passing the argument \code{abbreviations = "ID"}. 
+#' See the documentation for \code{\link[snakecase:to_any_case]{snakecase::to_any_case}} 
+#' for more about how to use its features.
 #'
 #' On some systems, not all transliterators to ASCII are available.  If this is
 #' the case on your system, all available transliterators will be used, and a
@@ -95,14 +98,14 @@ make_clean_names <- function(string,
 
   replaced_names <-
     stringr::str_replace_all(
-      str=string,
+      string=string,
       pattern=replace
     )
   transliterated_names <-
     if (ascii) {
       stringi::stri_trans_general(
         replaced_names,
-        id=available_transliterators(c("Any-Latin", "Greek-Latin", "Latin-ASCII"))
+        id=available_transliterators(c("Any-Latin", "Greek-Latin", "Any-NFKD", "Any-NFC", "Latin-ASCII"))
       )
     } else {
       replaced_names
@@ -110,7 +113,7 @@ make_clean_names <- function(string,
   # Remove starting spaces and punctuation
   good_start <-
     stringr::str_replace(
-      str=transliterated_names,
+      string=transliterated_names,
       # Description of this regexp:
       # \A: beginning of the string (rather than beginning of the line as ^ would indicate)
       # \h: any horizontal whitespace character (spaces, tabs, and anything else that is a Unicode whitespace)
@@ -121,13 +124,20 @@ make_clean_names <- function(string,
       pattern="\\A[\\h\\s\\p{Punctuation}\\p{Symbol}\\p{Separator}\\p{Other}]*(.*)$",
       replacement="\\1"
     )
+  # Convert all interior spaces and punctuation to single dots
+  cleaned_within <-
+    stringr::str_replace(
+      string=good_start,
+      pattern="[\\h\\s\\p{Punctuation}\\p{Symbol}\\p{Separator}\\p{Other}]+",
+      replacement="."
+    )
   # make.names() is dependent on the locale and therefore will return different
   # system-dependent values (e.g. as in issue #268 with Japanese characters).
   made_names <-
     if (use_make_names) {
-      make.names(good_start)
+      make.names(cleaned_within)
     } else {
-      good_start
+      cleaned_within
     }
 
   cased_names <-

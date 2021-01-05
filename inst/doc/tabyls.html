@@ -601,9 +601,9 @@ body {
 <body>
 
 <h1 id="tabyls-a-tidy-fully-featured-approach-to-counting-things">tabyls: a tidy, fully-featured approach to counting things</h1>
-<p>2020-04-11</p>
+<p>2021-01-04</p>
 <h2 id="motivation-why-tabyl">Motivation: why tabyl?</h2>
-<p>Analysts do a lot of counting. Indeed, it’s been said that “<a href="https://twitter.com/joelgrus/status/833691273873600512">data science is mostly counting things</a>.” But the base R function for counting, <code>table()</code>, leaves much to be desired:</p>
+<p>Analysts do a lot of counting. Indeed, it’s been said that “data science is mostly counting things.” But the base R function for counting, <code>table()</code>, leaves much to be desired:</p>
 <ul>
 <li>It doesn’t accept data.frame inputs (and thus doesn’t play nicely with the <code>%&gt;%</code> pipe)</li>
 <li>It doesn’t output data.frames</li>
@@ -660,18 +660,18 @@ body {
 <a class="sourceLine" id="cb5-2" title="2"><span class="st">  </span><span class="kw">tabyl</span>(gender, eye_color)</a>
 <a class="sourceLine" id="cb5-3" title="3"></a>
 <a class="sourceLine" id="cb5-4" title="4">t2</a>
-<a class="sourceLine" id="cb5-5" title="5"><span class="co">#&gt;  gender blue blue-gray brown dark hazel yellow</span></a>
-<a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt;  female    3         0     5    0     1      0</span></a>
-<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt;    male    9         1    12    1     1      2</span></a></code></pre></div>
+<a class="sourceLine" id="cb5-5" title="5"><span class="co">#&gt;     gender blue blue-gray brown dark hazel yellow</span></a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="co">#&gt;   feminine    3         0     5    0     1      0</span></a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="co">#&gt;  masculine    9         1    12    1     1      2</span></a></code></pre></div>
 <p>Since it’s a <code>tabyl</code>, we can enhance it with <code>adorn_</code> helper functions. For instance:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"></a>
 <a class="sourceLine" id="cb6-2" title="2">t2 <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb6-3" title="3"><span class="st">  </span><span class="kw">adorn_percentages</span>(<span class="st">&quot;row&quot;</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb6-4" title="4"><span class="st">  </span><span class="kw">adorn_pct_formatting</span>(<span class="dt">digits =</span> <span class="dv">2</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb6-5" title="5"><span class="st">  </span><span class="kw">adorn_ns</span>()</a>
-<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt;  gender       blue blue-gray       brown      dark      hazel    yellow</span></a>
-<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt;  female 33.33% (3) 0.00% (0) 55.56%  (5) 0.00% (0) 11.11% (1) 0.00% (0)</span></a>
-<a class="sourceLine" id="cb6-8" title="8"><span class="co">#&gt;    male 34.62% (9) 3.85% (1) 46.15% (12) 3.85% (1)  3.85% (1) 7.69% (2)</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">#&gt;     gender       blue blue-gray       brown      dark      hazel    yellow</span></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="co">#&gt;   feminine 33.33% (3) 0.00% (0) 55.56%  (5) 0.00% (0) 11.11% (1) 0.00% (0)</span></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="co">#&gt;  masculine 34.62% (9) 3.85% (1) 46.15% (12) 3.85% (1)  3.85% (1) 7.69% (2)</span></a></code></pre></div>
 <p>Adornments have options to control axes, rounding, and other relevant formatting choices (more on that below).</p>
 <h2 id="three-way-tabyl">Three-way tabyl</h2>
 <p>Just as <code>table()</code> accepts three variables, so does <code>tabyl()</code>, producing a list of tabyls:</p>
@@ -680,7 +680,7 @@ body {
 <a class="sourceLine" id="cb7-3" title="3"></a>
 <a class="sourceLine" id="cb7-4" title="4"><span class="co"># the result is a tabyl of eye color x skin color, split into a list by gender</span></a>
 <a class="sourceLine" id="cb7-5" title="5">t3 </a>
-<a class="sourceLine" id="cb7-6" title="6"><span class="co">#&gt; $female</span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="co">#&gt; $feminine</span></a>
 <a class="sourceLine" id="cb7-7" title="7"><span class="co">#&gt;  eye_color dark fair light pale tan white</span></a>
 <a class="sourceLine" id="cb7-8" title="8"><span class="co">#&gt;       blue    0    2     1    0   0     0</span></a>
 <a class="sourceLine" id="cb7-9" title="9"><span class="co">#&gt;  blue-gray    0    0     0    0   0     0</span></a>
@@ -689,7 +689,7 @@ body {
 <a class="sourceLine" id="cb7-12" title="12"><span class="co">#&gt;      hazel    0    0     1    0   0     0</span></a>
 <a class="sourceLine" id="cb7-13" title="13"><span class="co">#&gt;     yellow    0    0     0    0   0     0</span></a>
 <a class="sourceLine" id="cb7-14" title="14"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-15" title="15"><span class="co">#&gt; $male</span></a>
+<a class="sourceLine" id="cb7-15" title="15"><span class="co">#&gt; $masculine</span></a>
 <a class="sourceLine" id="cb7-16" title="16"><span class="co">#&gt;  eye_color dark fair light pale tan white</span></a>
 <a class="sourceLine" id="cb7-17" title="17"><span class="co">#&gt;       blue    0    7     2    0   0     0</span></a>
 <a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt;  blue-gray    0    1     0    0   0     0</span></a>
@@ -706,7 +706,7 @@ body {
 <a class="sourceLine" id="cb8-6" title="6"><span class="st">  </span><span class="kw">adorn_pct_formatting</span>(<span class="dt">digits =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb8-7" title="7"><span class="st">  </span>adorn_ns <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb8-8" title="8"><span class="st">  </span>adorn_title</a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; $female</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; $feminine</span></a>
 <a class="sourceLine" id="cb8-10" title="10"><span class="co">#&gt;            skin_color          </span></a>
 <a class="sourceLine" id="cb8-11" title="11"><span class="co">#&gt;  eye_color       fair     light</span></a>
 <a class="sourceLine" id="cb8-12" title="12"><span class="co">#&gt;       blue  22.2% (2) 11.1% (1)</span></a>
@@ -714,7 +714,7 @@ body {
 <a class="sourceLine" id="cb8-14" title="14"><span class="co">#&gt;      hazel   0.0% (0) 11.1% (1)</span></a>
 <a class="sourceLine" id="cb8-15" title="15"><span class="co">#&gt;      Total  33.3% (3) 66.7% (6)</span></a>
 <a class="sourceLine" id="cb8-16" title="16"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb8-17" title="17"><span class="co">#&gt; $male</span></a>
+<a class="sourceLine" id="cb8-17" title="17"><span class="co">#&gt; $masculine</span></a>
 <a class="sourceLine" id="cb8-18" title="18"><span class="co">#&gt;            skin_color                                                </span></a>
 <a class="sourceLine" id="cb8-19" title="19"><span class="co">#&gt;  eye_color       dark       fair     light     pale      tan    white</span></a>
 <a class="sourceLine" id="cb8-20" title="20"><span class="co">#&gt;       blue   0.0% (0) 26.9%  (7)  7.7% (2) 0.0% (0) 0.0% (0) 0.0% (0)</span></a>
@@ -761,7 +761,7 @@ body {
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">female</td>
+<td align="left">feminine</td>
 <td align="left">33% (3)</td>
 <td align="left">0% (0)</td>
 <td align="left">56% (5)</td>
@@ -771,7 +771,7 @@ body {
 <td align="left">100% (9)</td>
 </tr>
 <tr class="even">
-<td align="left">male</td>
+<td align="left">masculine</td>
 <td align="left">35% (9)</td>
 <td align="left">4% (1)</td>
 <td align="left">46% (12)</td>
@@ -797,7 +797,7 @@ body {
 <li><strong><code>adorn_totals()</code></strong>: Add totals row, column, or both.</li>
 <li><strong><code>adorn_percentages()</code></strong>: Calculate percentages along either axis or over the entire tabyl</li>
 <li><strong><code>adorn_pct_formatting()</code></strong>: Format percentage columns, controlling the number of digits to display and whether to append the <code>%</code> symbol</li>
-<li><strong><code>adorn_rounding()</code></strong>: Round a data.frame of numbers (usually the result of <code>adorn_percentages</code>), either using the base R <code>round()</code> function or using janitor’s <code>round_half_up()</code> to round all ties up (<a href="http://stackoverflow.com/a/12688836/4470365">thanks, StackOverflow</a>).
+<li><strong><code>adorn_rounding()</code></strong>: Round a data.frame of numbers (usually the result of <code>adorn_percentages</code>), either using the base R <code>round()</code> function or using janitor’s <code>round_half_up()</code> to round all ties up (<a href="https://stackoverflow.com/a/12688836/4470365">thanks, StackOverflow</a>).
 <ul>
 <li>e.g., round 10.5 up to 11, consistent with Excel’s tie-breaking behavior.
 <ul>
@@ -815,17 +815,17 @@ body {
 <p>A simple example: calculate the proportion of records meeting a certain condition, then format the results.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">percent_above_<span class="dv">165</span>_cm &lt;-<span class="st"> </span>humans <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb10-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(gender) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">pct_above_165_cm =</span> <span class="kw">mean</span>(height <span class="op">&gt;</span><span class="st"> </span><span class="dv">165</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">pct_above_165_cm =</span> <span class="kw">mean</span>(height <span class="op">&gt;</span><span class="st"> </span><span class="dv">165</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>), <span class="dt">.groups =</span> <span class="st">&quot;drop&quot;</span>)</a>
 <a class="sourceLine" id="cb10-4" title="4"></a>
 <a class="sourceLine" id="cb10-5" title="5">percent_above_<span class="dv">165</span>_cm <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb10-6" title="6"><span class="st">  </span><span class="kw">adorn_pct_formatting</span>()</a>
 <a class="sourceLine" id="cb10-7" title="7"><span class="co">#&gt; # A tibble: 2 x 2</span></a>
-<a class="sourceLine" id="cb10-8" title="8"><span class="co">#&gt;   gender pct_above_165_cm</span></a>
-<a class="sourceLine" id="cb10-9" title="9"><span class="co">#&gt;   &lt;chr&gt;  &lt;chr&gt;           </span></a>
-<a class="sourceLine" id="cb10-10" title="10"><span class="co">#&gt; 1 female 12.5%           </span></a>
-<a class="sourceLine" id="cb10-11" title="11"><span class="co">#&gt; 2 male   100.0%</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-8" title="8"><span class="co">#&gt;   gender    pct_above_165_cm</span></a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;           </span></a>
+<a class="sourceLine" id="cb10-10" title="10"><span class="co">#&gt; 1 feminine  12.5%           </span></a>
+<a class="sourceLine" id="cb10-11" title="11"><span class="co">#&gt; 2 masculine 100.0%</span></a></code></pre></div>
 <p>You can control which columns are adorned by using the <code>...</code> argument. It accepts the <a href="https://r4ds.had.co.nz/transform.html#select">tidyselect helpers</a>. That is, you can specify columns the same way you would using <code>dplyr::select()</code>.</p>
-<p>For instance, say you have a numeric column that should not be included in percentage formatting and you wish to exempt it. Here, only the <code>count</code> column is adorned:</p>
+<p>For instance, say you have a numeric column that should not be included in percentage formatting and you wish to exempt it. Here, only the <code>proportion</code> column is adorned:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">mtcars <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb11-2" title="2"><span class="st">  </span><span class="kw">count</span>(cyl, gear) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb11-3" title="3"><span class="st">  </span><span class="kw">rename</span>(<span class="dt">proportion =</span> n) <span class="op">%&gt;%</span></a>
@@ -842,34 +842,32 @@ body {
 <a class="sourceLine" id="cb11-14" title="14"><span class="co">#&gt;    8    5       6.2%</span></a></code></pre></div>
 <p>Here we specify that only two consecutive numeric columns should be totaled (<code>year</code> is numeric but should not be included):</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">cases &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
-<a class="sourceLine" id="cb12-2" title="2">  <span class="dt">region =</span> <span class="kw">c</span>(<span class="st">&quot;East, West&quot;</span>),</a>
+<a class="sourceLine" id="cb12-2" title="2">  <span class="dt">region =</span> <span class="kw">c</span>(<span class="st">&quot;East&quot;</span>, <span class="st">&quot;West&quot;</span>),</a>
 <a class="sourceLine" id="cb12-3" title="3">  <span class="dt">year =</span> <span class="dv">2015</span>,</a>
 <a class="sourceLine" id="cb12-4" title="4">  <span class="dt">recovered =</span> <span class="kw">c</span>(<span class="dv">125</span>, <span class="dv">87</span>),</a>
-<a class="sourceLine" id="cb12-5" title="5">  <span class="dt">died =</span> <span class="kw">c</span>(<span class="dv">13</span>, <span class="dv">12</span>),</a>
-<a class="sourceLine" id="cb12-6" title="6">  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb12-7" title="7">)</a>
-<a class="sourceLine" id="cb12-8" title="8"></a>
-<a class="sourceLine" id="cb12-9" title="9">cases <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb12-10" title="10"><span class="st">    </span><span class="kw">adorn_totals</span>(<span class="kw">c</span>(<span class="st">&quot;col&quot;</span>, <span class="st">&quot;row&quot;</span>), <span class="dt">fill =</span> <span class="st">&quot;-&quot;</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>, <span class="dt">name =</span> <span class="st">&quot;Total Cases&quot;</span>, recovered<span class="op">:</span>died)</a>
-<a class="sourceLine" id="cb12-11" title="11"><span class="co">#&gt;       region year recovered died Total Cases</span></a>
-<a class="sourceLine" id="cb12-12" title="12"><span class="co">#&gt;   East, West 2015       125   13         138</span></a>
-<a class="sourceLine" id="cb12-13" title="13"><span class="co">#&gt;   East, West 2015        87   12          99</span></a>
-<a class="sourceLine" id="cb12-14" title="14"><span class="co">#&gt;  Total Cases    -       212   25         237</span></a></code></pre></div>
+<a class="sourceLine" id="cb12-5" title="5">  <span class="dt">died =</span> <span class="kw">c</span>(<span class="dv">13</span>, <span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb12-6" title="6">)</a>
+<a class="sourceLine" id="cb12-7" title="7"></a>
+<a class="sourceLine" id="cb12-8" title="8">cases <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb12-9" title="9"><span class="st">    </span><span class="kw">adorn_totals</span>(<span class="kw">c</span>(<span class="st">&quot;col&quot;</span>, <span class="st">&quot;row&quot;</span>), <span class="dt">fill =</span> <span class="st">&quot;-&quot;</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>, <span class="dt">name =</span> <span class="st">&quot;Total Cases&quot;</span>, recovered<span class="op">:</span>died)</a>
+<a class="sourceLine" id="cb12-10" title="10"><span class="co">#&gt;       region year recovered died Total Cases</span></a>
+<a class="sourceLine" id="cb12-11" title="11"><span class="co">#&gt;         East 2015       125   13         138</span></a>
+<a class="sourceLine" id="cb12-12" title="12"><span class="co">#&gt;         West 2015        87   12          99</span></a>
+<a class="sourceLine" id="cb12-13" title="13"><span class="co">#&gt;  Total Cases    -       212   25         237</span></a></code></pre></div>
 <p>Here’s a more complex example that uses a data.frame of means, not counts. We create a table containing the mean of a 3rd variable when grouped by two other variables, then use <code>adorn_</code> functions to round the values and append Ns. The first part is pretty straightforward:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">library</span>(tidyr) <span class="co"># for spread()</span></a>
 <a class="sourceLine" id="cb13-2" title="2">mpg_by_cyl_and_am &lt;-<span class="st"> </span>mtcars <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb13-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(cyl, am) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb13-4" title="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mpg =</span> <span class="kw">mean</span>(mpg)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb13-4" title="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">mpg =</span> <span class="kw">mean</span>(mpg), <span class="dt">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb13-5" title="5"><span class="st">  </span><span class="kw">spread</span>(am, mpg)</a>
 <a class="sourceLine" id="cb13-6" title="6"></a>
 <a class="sourceLine" id="cb13-7" title="7">mpg_by_cyl_and_am</a>
 <a class="sourceLine" id="cb13-8" title="8"><span class="co">#&gt; # A tibble: 3 x 3</span></a>
-<a class="sourceLine" id="cb13-9" title="9"><span class="co">#&gt; # Groups:   cyl [3]</span></a>
-<a class="sourceLine" id="cb13-10" title="10"><span class="co">#&gt;     cyl   `0`   `1`</span></a>
-<a class="sourceLine" id="cb13-11" title="11"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb13-12" title="12"><span class="co">#&gt; 1     4  22.9  28.1</span></a>
-<a class="sourceLine" id="cb13-13" title="13"><span class="co">#&gt; 2     6  19.1  20.6</span></a>
-<a class="sourceLine" id="cb13-14" title="14"><span class="co">#&gt; 3     8  15.0  15.4</span></a></code></pre></div>
+<a class="sourceLine" id="cb13-9" title="9"><span class="co">#&gt;     cyl   `0`   `1`</span></a>
+<a class="sourceLine" id="cb13-10" title="10"><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb13-11" title="11"><span class="co">#&gt; 1     4  22.9  28.1</span></a>
+<a class="sourceLine" id="cb13-12" title="12"><span class="co">#&gt; 2     6  19.1  20.6</span></a>
+<a class="sourceLine" id="cb13-13" title="13"><span class="co">#&gt; 3     8  15.0  15.4</span></a></code></pre></div>
 <p>Now to <code>adorn_</code> it. Since this is not the result of a <code>tabyl()</code> call, it doesn’t have the underlying Ns stored in the <code>core</code> attribute, so we’ll have to supply them:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">mpg_by_cyl_and_am <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb14-2" title="2"><span class="st">  </span><span class="kw">adorn_rounding</span>() <span class="op">%&gt;%</span></a>
@@ -882,7 +880,48 @@ body {
 <a class="sourceLine" id="cb14-9" title="9"><span class="co">#&gt; 1                      4 22.9  (3) 28.1 (8)</span></a>
 <a class="sourceLine" id="cb14-10" title="10"><span class="co">#&gt; 2                      6 19.1  (4) 20.6 (3)</span></a>
 <a class="sourceLine" id="cb14-11" title="11"><span class="co">#&gt; 3                      8 15.1 (12) 15.4 (2)</span></a></code></pre></div>
-<p>If needed, Ns can be manipulated in their own data.frame before they are appended. E.g., if you have a tabyl with values of N in the thousands, you could divide them by 1000, round, and append “k” before inserting them with <code>adorn_ns</code>.</p>
+<p>If needed, Ns can be manipulated in their own data.frame before they are appended. Here a tabyl with values in the thousands has its Ns formatted to include the separating character <code>,</code> as typically seen in American numbers, e.g., <code>3,000</code>.</p>
+<p>First we create the tabyl to adorn:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb15-2" title="2">raw_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">sex =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;m&quot;</span>, <span class="st">&quot;f&quot;</span>), <span class="dv">3000</span>),</a>
+<a class="sourceLine" id="cb15-3" title="3">                <span class="dt">age =</span> <span class="kw">round</span>(<span class="kw">runif</span>(<span class="dv">3000</span>, <span class="dv">1</span>, <span class="dv">102</span>), <span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb15-4" title="4">raw_data<span class="op">$</span>agegroup =<span class="st"> </span><span class="kw">cut</span>(raw_data<span class="op">$</span>age, <span class="kw">quantile</span>(raw_data<span class="op">$</span>age, <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>, <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dv">1</span>)))</a>
+<a class="sourceLine" id="cb15-5" title="5"></a>
+<a class="sourceLine" id="cb15-6" title="6">comparison &lt;-<span class="st"> </span>raw_data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-7" title="7"><span class="st">  </span><span class="kw">tabyl</span>(agegroup, sex, <span class="dt">show_missing_levels =</span> F) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-8" title="8"><span class="st">  </span><span class="kw">adorn_totals</span>(<span class="kw">c</span>(<span class="st">&quot;row&quot;</span>, <span class="st">&quot;col&quot;</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-9" title="9"><span class="st">  </span><span class="kw">adorn_percentages</span>(<span class="st">&quot;col&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb15-10" title="10"><span class="st">  </span><span class="kw">adorn_pct_formatting</span>(<span class="dt">digits =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb15-11" title="11"></a>
+<a class="sourceLine" id="cb15-12" title="12">comparison</a>
+<a class="sourceLine" id="cb15-13" title="13"><span class="co">#&gt;  agegroup      f      m  Total</span></a>
+<a class="sourceLine" id="cb15-14" title="14"><span class="co">#&gt;    (1,34]  33.9%  32.3%  33.1%</span></a>
+<a class="sourceLine" id="cb15-15" title="15"><span class="co">#&gt;   (34,68]  33.0%  33.7%  33.4%</span></a>
+<a class="sourceLine" id="cb15-16" title="16"><span class="co">#&gt;  (68,102]  32.7%  33.3%  33.0%</span></a>
+<a class="sourceLine" id="cb15-17" title="17"><span class="co">#&gt;      &lt;NA&gt;   0.4%   0.6%   0.5%</span></a>
+<a class="sourceLine" id="cb15-18" title="18"><span class="co">#&gt;     Total 100.0% 100.0% 100.0%</span></a></code></pre></div>
+<p>At this point, the Ns are unformatted:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">comparison <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="st">  </span><span class="kw">adorn_ns</span>()</a>
+<a class="sourceLine" id="cb16-3" title="3"><span class="co">#&gt;  agegroup             f             m         Total</span></a>
+<a class="sourceLine" id="cb16-4" title="4"><span class="co">#&gt;    (1,34]  33.9% (1018)  32.3%  (970)  33.1% (1988)</span></a>
+<a class="sourceLine" id="cb16-5" title="5"><span class="co">#&gt;   (34,68]  33.0%  (990)  33.7% (1012)  33.4% (2002)</span></a>
+<a class="sourceLine" id="cb16-6" title="6"><span class="co">#&gt;  (68,102]  32.7%  (980)  33.3% (1000)  33.0% (1980)</span></a>
+<a class="sourceLine" id="cb16-7" title="7"><span class="co">#&gt;      &lt;NA&gt;   0.4%   (12)   0.6%   (18)   0.5%   (30)</span></a>
+<a class="sourceLine" id="cb16-8" title="8"><span class="co">#&gt;     Total 100.0% (3000) 100.0% (3000) 100.0% (6000)</span></a></code></pre></div>
+<p>Now we format them to insert the thousands commas. A tabyl’s raw Ns are stored in its <code>&quot;core&quot;</code> attribute. Here we retrieve those with <code>attr()</code>, then apply the base R function <code>format()</code> to all numeric columns. Lastly, we append these Ns using <code>adorn_ns()</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">formatted_ns &lt;-<span class="st"> </span><span class="kw">attr</span>(comparison, <span class="st">&quot;core&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># extract the tabyl&#39;s underlying Ns</span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="st">  </span><span class="kw">adorn_totals</span>(<span class="kw">c</span>(<span class="st">&quot;row&quot;</span>, <span class="st">&quot;col&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># to match the data.frame we&#39;re appending to</span></a>
+<a class="sourceLine" id="cb17-3" title="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate_if</span>(is.numeric, format, <span class="dt">big.mark =</span> <span class="st">&quot;,&quot;</span>)</a>
+<a class="sourceLine" id="cb17-4" title="4"></a>
+<a class="sourceLine" id="cb17-5" title="5">comparison <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-6" title="6"><span class="st">  </span><span class="kw">adorn_ns</span>(<span class="dt">position =</span> <span class="st">&quot;rear&quot;</span>, <span class="dt">ns =</span> formatted_ns)</a>
+<a class="sourceLine" id="cb17-7" title="7"><span class="co">#&gt;  agegroup              f              m          Total</span></a>
+<a class="sourceLine" id="cb17-8" title="8"><span class="co">#&gt;    (1,34]  33.9% (1,018)  32.3% (  970)  33.1% (1,988)</span></a>
+<a class="sourceLine" id="cb17-9" title="9"><span class="co">#&gt;   (34,68]  33.0% (  990)  33.7% (1,012)  33.4% (2,002)</span></a>
+<a class="sourceLine" id="cb17-10" title="10"><span class="co">#&gt;  (68,102]  32.7% (  980)  33.3% (1,000)  33.0% (1,980)</span></a>
+<a class="sourceLine" id="cb17-11" title="11"><span class="co">#&gt;      &lt;NA&gt;   0.4% (   12)   0.6% (   18)   0.5% (   30)</span></a>
+<a class="sourceLine" id="cb17-12" title="12"><span class="co">#&gt;     Total 100.0% (3,000) 100.0% (3,000) 100.0% (6,000)</span></a></code></pre></div>
 <h3 id="questions-comments">Questions? Comments?</h3>
 <p>File <a href="https://github.com/sfirke/janitor/issues">an issue on GitHub</a> if you have suggestions related to <code>tabyl()</code> and its <code>adorn_</code> helpers or encounter problems while using them.</p>
 
