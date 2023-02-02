@@ -25,7 +25,7 @@ convert_to_datetime(
 \item{x}{The object to convert}
 
 \item{...}{Passed to further methods.  Eventually may be passed to
-`excel_numeric_to_date()`, `base::as.POXIXct()`, or `base::as.Date()`.}
+`excel_numeric_to_date()`, `base::as.POSIXct()`, or `base::as.Date()`.}
 
 \item{character_fun}{A function to convert non-numeric-looking, non-NA values
 in `x` to POSIXct objects.}
@@ -54,9 +54,9 @@ Character conversion checks if it matches something that looks like
 }
 \section{Functions}{
 \itemize{
-\item \code{convert_to_datetime}: Convert to a date-time (POSIXct)
-}}
+\item \code{convert_to_datetime()}: Convert to a date-time (POSIXct)
 
+}}
 \examples{
 convert_to_date("2009-07-06")
 convert_to_date(40000)
@@ -70,6 +70,7 @@ convert_to_datetime(
 }
 \seealso{
 Other Date-time cleaning: 
-\code{\link{excel_numeric_to_date}()}
+\code{\link{excel_numeric_to_date}()},
+\code{\link{sas_numeric_to_date}()}
 }
 \concept{Date-time cleaning}

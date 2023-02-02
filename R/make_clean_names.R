@@ -49,6 +49,8 @@
 #' @param use_make_names Should \code{make.names()} be applied to ensure that the
 #'   output is usable as a name without quoting?  (Avoiding \code{make.names()}
 #'   ensures that the output is locale-independent but quoting may be required.)
+#' @param allow_dupes Allow duplicates in the returned names (\code{TRUE}) or not
+#'   (\code{FALSE}, the default).
 #' @inheritParams snakecase::to_any_case
 #' @inheritDotParams snakecase::to_any_case
 #'
@@ -84,6 +86,7 @@ make_clean_names <- function(string,
                                ),
                              ascii=TRUE,
                              use_make_names=TRUE,
+                             allow_dupes=FALSE,
                              # default arguments for snake_case::to_any_case
                              sep_in = "\\.",
                              transliterations = "Latin-ASCII",
@@ -96,6 +99,7 @@ make_clean_names <- function(string,
     return(old_make_clean_names(string))
   }
 
+  warn_micro_mu(string=string, replace=replace)
   replaced_names <-
     stringr::str_replace_all(
       string=string,
@@ -151,25 +155,94 @@ make_clean_names <- function(string,
       ...
     )
   
-  # Handle duplicated names - they mess up dplyr pipelines.  This appends the
-  # column number to repeated instances of duplicate variable names.
-  while (any(duplicated(cased_names))) {
-    dupe_count <-
-      vapply(
-        seq_along(cased_names), function(i) {
-          sum(cased_names[i] == cased_names[1:i])
-        },
-        1L
-      )
-  
-    cased_names[dupe_count > 1] <-
-      paste(
-        cased_names[dupe_count > 1],
-        dupe_count[dupe_count > 1],
-        sep = "_"
+  # Handle duplicated names by appending an incremental counter to repeats
+  if (!allow_dupes) {
+    while (any(duplicated(cased_names))) {
+      dupe_count <-
+        vapply(
+          seq_along(cased_names), function(i) {
+            sum(cased_names[i] == cased_names[1:i])
+          },
+          1L
+        )
+      
+      cased_names[dupe_count > 1] <-
+        paste(
+          cased_names[dupe_count > 1],
+          dupe_count[dupe_count > 1],
+          sep = "_"
+        )
+    }    
+  }
+
+  cased_names
+}
+
+#' Warn if micro or mu are going to be replaced with make_clean_names()
+#' 
+#' @inheritParams make_clean_names
+#' @param character Which character should be tested for ("micro" or "mu", or both)?
+#' @return TRUE if a warning was issued or FALSE if no warning was issued
+#' @keywords Internal
+#' @noRd
+warn_micro_mu <- function(string, replace) {
+  micro_mu <- names(mu_to_u)
+  # The vector of characters that exist but are not handled at all
+  warning_characters <- character()
+  # The vector of characters that exist and may be handled by a specific replacement
+  warning_characters_specific <- character()
+  for (current_unicode in micro_mu) {
+    # Does the character exist in any of the names?
+    has_character <- any(grepl(x=string, pattern=current_unicode, fixed=TRUE))
+    if (has_character) {
+      # Is there a general replacement for any occurrence of the character?
+      has_replacement_general <- any(names(replace) %in% current_unicode)
+      # Is there a specific replacement for some form including the character,
+      # but it may not cover all of replacements?
+      has_replacement_specific <- any(grepl(x=names(replace), pattern=current_unicode, fixed=TRUE))
+      warning_characters <-
+        c(
+          warning_characters,
+          current_unicode[!has_replacement_general & !has_replacement_specific]
+        )
+      warning_characters_specific <-
+        c(
+          warning_characters_specific,
+          current_unicode[!has_replacement_general & has_replacement_specific]
+        )
+    }
+  }
+  # Issue the consolidated warnings, if needed
+  warning_message_general <- NULL
+  if (length(warning_characters) > 0) {
+    warning_characters_utf <-
+      sprintf("\\u%04x", sapply(X=warning_characters, FUN=utf8ToInt))
+    warning_message_general <-
+      sprintf(
+        "The following characters are in the names to clean but are not replaced: %s",
+        paste(warning_characters_utf, collapse=", ")
       )
   }
-  cased_names
+  warning_message_specific <- NULL
+  if (length(warning_characters_specific) > 0) {
+    warning_characters_utf <-
+      sprintf("\\u%04x", sapply(X=warning_characters_specific, FUN=utf8ToInt))
+    warning_message_specific <-
+      sprintf(
+        "The following characters are in the names to clean but may not be replaced, check the output names carefully: %s",
+        paste(warning_characters_utf, collapse=", ")
+      )
+  }
+  if (!is.null(warning_message_general) | !is.null(warning_message_specific)) {
+    warning_message <- paste(c(warning_message_general, warning_message_specific), collapse="\n")
+    warning(
+      "Watch out!  ",
+      "The mu or micro symbol is in the input string, and may have been converted to 'm' while 'u' may have been expected.  ",
+      "Consider adding the following to the `replace` argument:\n",
+      warning_message
+    )
+  }
+  length(c(warning_characters, warning_characters_specific)) > 0
 }
 
 # copy of clean_names from janitor v0.3 on CRAN, to preserve old behavior

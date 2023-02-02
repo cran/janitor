@@ -1,9 +1,5 @@
 # Tests tabyl class functions
 
-library(janitor)
-library(testthat)
-context("as_tabyl() and untabyl()")
-
 a <- mtcars %>%
   tabyl(cyl, carb)
 
@@ -75,5 +71,44 @@ test_that("bad inputs are caught", {
   expect_error(
     as_tabyl(mtcars, axes = 1, row_var_name = "foo"),
     "variable names are only meaningful for two-way tabyls"
+  )
+})
+
+test_that("adorn_totals and adorn_percentages reset the tabyl's core to reflect sorting, #407", {
+  unsorted <- mtcars %>% tabyl(am, cyl)
+  sorted <- dplyr::arrange(unsorted, desc(`4`))
+  expect_equal(
+    sorted %>%
+      adorn_totals() %>%
+      attr(., "core"),
+    sorted %>%
+      untabyl
+  )
+  expect_equal(
+    sorted %>%
+      adorn_percentages() %>%
+      attr(., "core"),
+    sorted %>%
+      untabyl
+  )
+  # both:
+  expect_equal(
+    sorted %>%
+      adorn_totals() %>%
+      adorn_percentages() %>%
+      attr(., "core"),
+    sorted %>%
+      untabyl
+  )
+  # Ns with "Total" row sorted to top - the Total N should be up there too:
+  expect_equal(
+    sorted %>%
+      adorn_totals() %>%
+      adorn_percentages("col") %>%
+      dplyr::arrange(desc(`4`)) %>%
+      adorn_ns() %>%
+      dplyr::pull(`4`) %>%
+      dplyr::first(),
+    "1.0000000 (11)"
   )
 })

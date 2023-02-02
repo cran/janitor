@@ -9,7 +9,7 @@ excel_numeric_to_date(
   date_system = "modern",
   include_time = FALSE,
   round_seconds = TRUE,
-  tz = ""
+  tz = Sys.timezone()
 )
 }
 \arguments{
@@ -65,6 +65,7 @@ excel_numeric_to_date(40000.521, include_time = TRUE,
 }
 \seealso{
 Other Date-time cleaning: 
-\code{\link{convert_to_date}()}
+\code{\link{convert_to_date}()},
+\code{\link{sas_numeric_to_date}()}
 }
 \concept{Date-time cleaning}

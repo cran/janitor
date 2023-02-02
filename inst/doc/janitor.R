@@ -42,8 +42,27 @@ mtcars %>%
 ## -----------------------------------------------------------------------------
 get_dupes(mtcars, wt, cyl) # or mtcars %>% get_dupes(wt, cyl) if you prefer to pipe
 
+## ----message=FALSE------------------------------------------------------------
+library(dplyr)
+starwars[1:4,] %>%
+  get_one_to_one()
+
 ## -----------------------------------------------------------------------------
 tibble::as_tibble(iris, .name_repair = janitor::make_clean_names)
+
+## -----------------------------------------------------------------------------
+not_one_to_one <- data.frame(
+  X = rep(1:3, each = 2),
+  Y = c(rep(1:2, each = 2), 1:2))
+
+not_one_to_one
+
+# throws informative error:
+try(not_one_to_one %>%
+      dplyr::group_by(X) %>%
+      dplyr::mutate(
+        Z = single_value(Y, info = paste("Calculating Z for group X =", X)))
+      )
 
 ## -----------------------------------------------------------------------------
 q <- data.frame(v1 = c(1, NA, 3),

@@ -49,9 +49,7 @@ adorn_percentages <- function(dat, denominator = "row", na.rm = TRUE, ...) {
       stop("'denominator' must be one of 'row', 'col', or 'all'")
     }
     
-    if (!"tabyl" %in% class(dat)) {
-      dat <- as_tabyl(dat)
-    }
+    dat <- as_tabyl(dat)
 
     numeric_cols <- which(vapply(dat, is.numeric, logical(1)))
     non_numeric_cols <- setdiff(1:ncol(dat), numeric_cols)
@@ -93,9 +91,9 @@ adorn_percentages <- function(dat, denominator = "row", na.rm = TRUE, ...) {
       if ("col" %in% attr(dat, "totals") & !explicitly_exempt_totals) {
         cols_to_tally <- c(cols_to_tally, ncol(dat))
         if ("row" %in% attr(dat, "totals")) {
-          col_sum <- c(col_sum, sum(dplyr::last(dat)[-nrow(dat)]))
+          col_sum <- c(col_sum, sum(dat[-nrow(dat), ncol(dat)]))
         } else {
-          col_sum <- c(col_sum, sum(dplyr::last(dat)))
+          col_sum <- c(col_sum, sum(dat[ , ncol(dat)]))
         }
       }
       dat[cols_to_tally] <- sweep(dat[cols_to_tally], 2, col_sum, `/`) # from http://stackoverflow.com/questions/9447801/dividing-columns-by-colsums-in-r

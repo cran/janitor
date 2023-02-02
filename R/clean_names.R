@@ -14,6 +14,14 @@
 #' relies on the versatile function \code{\link[snakecase]{to_any_case}}, which 
 #' accepts many arguments.  See that function's documentation for ideas on getting 
 #' the most out of \code{clean_names}.  A few examples are included below.
+#' 
+#' A common issue is that the micro/mu symbol is replaced by "m" instead of "u".
+#' The replacement with "m" is more correct when doing Greek-to-ASCII
+#' transliteration but less correct when doing scientific data-to-ASCII
+#' transliteration.  A warning will be generated if the "m" replacement occurs.
+#' To replace with "u", please add the argument \code{replace=janitor:::mu_to_u}
+#' which is a character vector mapping all known mu or micro Unicode code points
+#' (characters) to "u".
 #'
 #' @param dat the input data.frame.
 #' @inheritDotParams make_clean_names -string
@@ -22,10 +30,12 @@
 #' @details \code{clean_names()} is intended to be used on \code{data.frames}
 #'   and \code{data.frame}-like objects. For this reason there are methods to
 #'   support using \code{clean_names()} on \code{sf} and \code{tbl_graph} (from
-#'   \code{tidygraph}) objects. For cleaning other named objects like named lists 
+#'   \code{tidygraph}) objects as well as on database connections through
+#'   \code{dbplyr}. For cleaning other named objects like named lists 
 #'   and vectors, use \code{make_clean_names()}.
 #' 
 #' @export
+#' @family Set names
 #' @examples
 #' 
 #' # --- Simple Usage ---
@@ -61,17 +71,19 @@ clean_names <- function(dat, ...) {
 
 #' @rdname clean_names
 #' @export
-clean_names.data.frame <- function(dat, ...) {
-  stats::setNames(dat, make_clean_names(names(dat), ...))
-}
-
-#' @rdname clean_names
-#' @export
 clean_names.default <- function(dat, ...) {
-  stop(
-    "No `clean_names()` method exists for the class ", paste(class(dat), collapse=", "),
-    "\nConsider janitor::make_clean_names() for other cases of manipulating vectors of names."
-  )
+  if(is.null(names(dat)) && is.null(dimnames(dat))) {
+    stop(
+      "`clean_names()` requires that either names or dimnames be non-null.",
+      call. = FALSE
+    )
+  }
+  if(is.null(names(dat))) {
+    dimnames(dat) <- lapply(dimnames(dat), make_clean_names, ...)
+  } else {
+    names(dat) <- make_clean_names(names(dat), ...)
+  }
+  dat
 }
 
 #' @rdname clean_names
@@ -97,7 +109,6 @@ clean_names.sf <- function(dat, ...) {
 
 #' @rdname clean_names
 #' @export
-#' @importFrom dplyr rename_all
 clean_names.tbl_graph <- function(dat, ...) {
   if (!requireNamespace("tidygraph", quietly = TRUE)) { # nocov start
     stop(
@@ -107,3 +118,44 @@ clean_names.tbl_graph <- function(dat, ...) {
   } # nocov end
   dplyr::rename_all(dat, .funs=make_clean_names, ...)
 }
+
+#' @rdname clean_names
+#' @export
+clean_names.tbl_lazy <- function(dat, ...) {
+  if (!requireNamespace("dbplyr", quietly = TRUE)) { # nocov start
+    stop(
+      "Package 'dbplyr' needed for this function to work. Please install it.", 
+      call. = FALSE
+    )
+  } # nocov end
+  dplyr::rename_with(dat, janitor::make_clean_names, .cols = dplyr::everything(), ...)
+}
+
+
+# TODO: According to https://www.compart.com/en/unicode/U+03BC reviewed on
+# 2021-07-10, there are some UTF-32 encoding characters that are also mu or
+# micro.  This only handles the utf-8 values; to add more characters, just add
+# to this character vector.
+
+#' Constant to help map from mu to u
+#' 
+#' This is a character vector with names of all known Unicode code points that
+#' look like the Greek mu or the micro symbol and values of "u".  This is
+#' intended to simplify mapping from mu or micro in Unicode to the character "u"
+#' with \code{clean_names()} and \code{make_clean_names()}.
+#' 
+#' See the help in \code{clean_names()} for how to use this.
+#'
+#' @family Set names
+mu_to_u <-
+  # setNames is used instead of setting the names directly because it prevents a
+  # warning like "unable to translate '<U+3382>' to native encoding" for several
+  # of the items.
+  setNames(
+    rep("u", 10),
+    nm=
+      c(
+        "\u00b5", "\u03bc", "\u3382", "\u338c", "\u338d",
+        "\u3395", "\u339b", "\u33b2", "\u33b6", "\u33bc"
+      )
+  )
