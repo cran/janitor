@@ -1,6 +1,6 @@
 Package: janitor
 Title: Simple Tools for Examining and Cleaning Dirty Data
-Version: 2.2.0
+Version: 2.2.1
 Authors@R: c(person("Sam", "Firke", email = "samuel.firke@gmail.com", role = c("aut", "cre")),
     person("Bill", "Denney", email = "wdenney@humanpredictions.com", role = "ctb"),
     person("Chris", "Haid", email = "chrishaid@gmail.com", role = "ctb"),
@@ -30,7 +30,7 @@ VignetteBuilder: knitr
 Encoding: UTF-8
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-02-02 16:00:15 UTC; samfi
+Packaged: 2024-12-22 15:53:13 UTC; sam
 Author: Sam Firke [aut, cre],
   Bill Denney [ctb],
   Chris Haid [ctb],
@@ -39,4 +39,4 @@ Author: Sam Firke [aut, cre],
   Jonathan Zadra [ctb]
 Maintainer: Sam Firke <samuel.firke@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-02-02 16:50:06 UTC
+Date/Publication: 2024-12-22 16:30:01 UTC

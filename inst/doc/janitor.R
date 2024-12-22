@@ -1,8 +1,8 @@
-## ---- echo = FALSE, message = FALSE-------------------------------------------
+## ----echo = FALSE, message = FALSE--------------------------------------------
 knitr::opts_chunk$set(collapse = T, comment = "#>")
 library(janitor)
 
-## ---- message = FALSE, warning = FALSE----------------------------------------
+## ----message = FALSE, warning = FALSE-----------------------------------------
 # Create a data.frame with dirty names
 test_df <- as.data.frame(matrix(ncol = 6))
 names(test_df) <- c("firstName", "ábc@!*", "% successful (2009)",

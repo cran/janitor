@@ -18,7 +18,7 @@
 
 [![R-CMD-check](https://github.com/sfirke/janitor/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sfirke/janitor/actions/workflows/R-CMD-check.yaml)
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/sfirke/janitor/master.svg)](https://codecov.io/github/sfirke/janitor?branch=master)
+Status](https://img.shields.io/codecov/c/github/sfirke/janitor/master.svg)](https://app.codecov.io/github/sfirke/janitor?branch=master)
 [![lifecycle](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-ago/janitor)](https://cran.r-project.org/package=janitor)
 ![!Monthly Downloads](https://cranlogs.r-pkg.org/badges/janitor)
@@ -27,8 +27,8 @@ Status](https://img.shields.io/codecov/c/github/sfirke/janitor/master.svg)](http
 
 **janitor** has simple functions for examining and cleaning dirty data.
 It was built with beginning and intermediate R users in mind and is
-optimized for user-friendliness. Advanced R users can already do
-everything covered here, but with janitor they can do it faster and save
+optimized for user-friendliness. Advanced R users can perform many of
+these tasks already, but with janitor they can do it faster and save
 their thinking for the fun stuff.
 
 The main janitor functions:
